@@ -18,17 +18,30 @@ height: 300px;
 
 function Fabric () {
   const [rect, setRect] = useState(null)
+  const [line, setLine] = useState(null)
   const canvas = useRef()
   const add = () => {
     const r = new fabric.Rect({
+      noScaleCache: false,
+      strokeUniform: true,
+      stroke: '#000',
+      strokeWidth: 4,
       left: 50,//距离画布左侧的距离，单位是像素
       top: 50,//距离画布上边的距离
       fill: 'red',//填充的颜色
       width: 100,//方形的宽度
-      height: 100//方形的高度
+      height: 100 //方形的高度
     });
-    setRect(r)
+    const l = new fabric.Line([90, 50, 90, 150], {
+      stroke: 'green',
+      strokeUniform: true,
+      strokeWidth: 8
+      // cornerSize: 30
+    })
     canvas.current.add(r)
+    canvas.current.add(l)
+    setRect(r)
+    setLine(l)
   }
 
   const move = () => {
@@ -41,7 +54,9 @@ function Fabric () {
 
   useEffect(() => {
     // const canvas = new fabric.Canvas('main')
-    canvas.current = new fabric.Canvas('main')
+    canvas.current = new fabric.Canvas('main', {
+      preserveObjectStacking: true
+    })
   }, [])
 
 
@@ -60,4 +75,7 @@ function Fabric () {
     </Box>
   )
 }
+
+// https://www.cnblogs.com/rachelch/p/14172947.html
+// https://codertw.com/%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80/704333/#outline__4_8
 export default Fabric;
