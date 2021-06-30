@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
 import styled from "@emotion/styled";
 import { Button, Radio, InputNumber } from "antd";
+// import logo from '@/assets/logo.svg'
+import girl from '@/assets/girl.jpeg'
+
 
 const Box = styled.div`
   background: #eee;
@@ -16,7 +19,7 @@ const Content = styled.div`
   height: 300px;
 `;
 
-function Fabric() {
+function Fabric () {
   const [drawType, setDrawType] = useState(1);
   const [tableCols, setTableCols] = useState(1);
   const [rect, setRect] = useState(null);
@@ -79,6 +82,19 @@ function Fabric() {
       // 选中对象不会到最高层，按原层次摆放
       preserveObjectStacking: true,
     });
+    fabric.Image.fromURL(girl, (img, err) => {
+      img.set({
+        // 通过scale来设置图片大小，这里设置和画布一样大
+        scaleX: c.width / img.width,
+        scaleY: c.height / img.height,
+      });
+      // 设置背景
+      c.setBackgroundImage(img, c.renderAll.bind(c));
+      c.renderAll();
+    })
+
+
+
     canvas.current = c;
     c.on("mouse:down", ({ pointer, target }) => {
       if (!target) {
@@ -87,11 +103,15 @@ function Fabric() {
         console.log(pointer, target);
       }
     });
-    c.clipTo = function (ctx) {
-      ctx.arc(100, 100, 200, 0, Math.PI*2, true);
-    }
-    add();
+    // c.clipTo = function (ctx) {
+    //   ctx.arc(100, 100, 200, 0, Math.PI*2, true);
+    // }
+    // add();
   }, []);
+
+  const small = ()=> {
+
+  }
 
   return (
     <Box>
@@ -109,8 +129,8 @@ function Fabric() {
           onChange={(e) => setTableCols(e)}
         ></InputNumber>
         列
-        {/* <Button onClick={move}>移动</Button>
-        <Button type="dashed">删除</Button> */}
+        <Button onClick={small}>放大</Button>
+        <Button type="dashed">缩小</Button>
       </Control>
       <Content>
         <canvas id="main" height="300" width="600"></canvas>
