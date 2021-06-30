@@ -122,3 +122,8 @@ function Fabric() {
 // https://www.cnblogs.com/rachelch/p/14172947.html
 // https://codertw.com/%E7%A8%8B%E5%BC%8F%E8%AA%9E%E8%A8%80/704333/#outline__4_8
 export default Fabric;
+
+
+// [14款web前端常用的富文本编辑器插件](https://cloud.tencent.com/developer/article/1747244)
+
+// https://xdsoft.net/jodit/
