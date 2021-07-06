@@ -24,6 +24,7 @@ function Fabric () {
   const [tableCols, setTableCols] = useState(1);
   const [rect, setRect] = useState(null);
   const [line, setLine] = useState(null);
+  const [radio, setRadio] = useState(1);
   const canvas = useRef();
   const add = () => {
     const r2 = new fabric.Rect({
@@ -81,16 +82,24 @@ function Fabric () {
     const c = new fabric.Canvas("main", {
       // 选中对象不会到最高层，按原层次摆放
       preserveObjectStacking: true,
+      centeredScaling: true
     });
     fabric.Image.fromURL(girl, (img, err) => {
+      const r = Math.min(1, c.width / img.width, c.height / img.height)
       img.set({
         // 通过scale来设置图片大小，这里设置和画布一样大
-        scaleX: c.width / img.width,
-        scaleY: c.height / img.height,
+        scaleX: r,
+        scaleY: r,
+        originX: "center", 
+        originY: "center"
       });
+      setRadio(r)
+      c.add(img)
       // 设置背景
-      c.setBackgroundImage(img, c.renderAll.bind(c));
-      c.renderAll();
+      // c.setBackgroundImage(img, c.renderAll.bind(c));
+      // const point = new fabric.Point(c.width / 2, c.height / 2); // 中心点缩放
+      // c.zoomToPoint(point, r);
+      // c.renderAll();
     })
 
 
@@ -109,10 +118,15 @@ function Fabric () {
     // add();
   }, []);
 
-  const small = ()=> {
+  const small = () => {
+    setRadio(radio - 0.1)
+    canvas.current.setZoom(radio - 0.1, {x: 300, y: 300})
 
   }
-
+  const big = () => {
+    setRadio(radio + 0.1)
+    canvas.current.setZoom(radio + 0.1, {x: 300, y: 300})
+  }
   return (
     <Box>
       <Control>
@@ -129,8 +143,9 @@ function Fabric () {
           onChange={(e) => setTableCols(e)}
         ></InputNumber>
         列
-        <Button onClick={small}>放大</Button>
-        <Button type="dashed">缩小</Button>
+        <Button onClick={big}>放大</Button>
+        {parseInt(radio * 100)}%
+        <Button type="dashed" onClick={small} >缩小</Button>
       </Control>
       <Content>
         <canvas id="main" height="300" width="600"></canvas>
