@@ -134,6 +134,7 @@ function Fabric() {
     const c = new fabric.Canvas("main", {
       // 选中对象不会到最高层，按原层次摆放
       preserveObjectStacking: true,
+      centeredScaling: true
     });
     // c.controlsAboveOverlay = true;
     fabric.Image.fromURL(screen, (img, err) => {
