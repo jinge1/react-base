@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
 import styled from "@emotion/styled";
 import { Button, Radio, InputNumber } from "antd";
@@ -24,27 +24,7 @@ function Fabric() {
   const [tableCols, setTableCols] = useState(1);
   const [pathObj, setPathObj] = useState(null);
   const [canvas, setCanvas] = useState(null);
-  const [src, setSrc] = useState("");
-  const [info, setInfo] = useState({});
-  // const [imgObj, setImgObj] = useState(null);
-
-  const change = useCallback((c, o) => {
-    const item = c.getObjects().find(({ showId }) => showId === 110);
-    if (item) {
-      const { width, height, left, top, scaleX, scaleY } = item;
-      o.set({
-        width,
-        height,
-        left,
-        top,
-        scaleX,
-        scaleY,
-      });
-      setInfo({ width, height, left, top, scaleX, scaleY });
-      // c.renderAll();
-    }
-  }, []);
-
+  const [imgObj, setImgObj] = useState(null);
   // const canvas = useRef();
   // const add = () => {
   //   // const r2 = new fabric.Rect({
@@ -154,9 +134,8 @@ function Fabric() {
     const c = new fabric.Canvas("main", {
       // 选中对象不会到最高层，按原层次摆放
       preserveObjectStacking: true,
-      // centeredScaling: true,
+      centeredScaling: true,
     });
-    setCanvas(c);
     // c.controlsAboveOverlay = true;
     fabric.Image.fromURL(screen, (img, err) => {
       const { width, height } = img;
@@ -170,23 +149,12 @@ function Fabric() {
         selectable: false,
       });
 
-      const moveRect = new fabric.Rect({
-        width: 100,
-        height: 100,
-        left: 100,
-        top: 100,
-        fill: "rgba(0, 200, 0, 0)",
-      });
-      moveRect.set({
-        showId: 110,
-      });
-
       const rect = new fabric.Rect({
         width: cWidth,
         height: cHeight,
         left: 0,
         top: 0,
-        fill: "rgba(0, 0, 0, 0.5)",
+        fill: "rgba(0, 0, 0, 0.6)",
       });
       rect.set({
         selectable: false,
@@ -206,51 +174,33 @@ function Fabric() {
       // rect.clipPath = pathRect;
 
       c.add(img);
-
       c.add(rect);
-      c.add(moveRect);
-      rect.clipPath = pathRect;
-      // let l = 100;
-      // setInterval(() => {
-      //   l = l + 100;
-      //   if (l > 600) {
-      //     l = 0;
-      //   }
-      //   pathRect.set({
-      //     left: l,
-      //   });
-      //   c.renderAll();
-      // }, 500);
 
-      // img.clone((img2) => {
-      //   img2.set({
-      //     selectable: false,
-      //   });
-      //   img2.clipPath = pathRect;
-      //   c.add(img2);
-      //   setImgObj(img2);
+      img.clone((img2) => {
+        img2.set({
+          selectable: false,
+        });
+        img2.clipPath = pathRect;
+        c.add(img2);
+        setImgObj(img2);
 
-      //   // setTimeout(() => {
-      //   //   console.log(12345);
-      //   //   pathRect.set({
-      //   //     left: 300,
-      //   //   });
-      //   //   c.renderAll();
-      //   // }, 1000);
-      //   // // pathRect.set({
-      //   // //   left: 100,
-      //   // // });
+        // setTimeout(() => {
+        //   console.log(12345);
+        //   pathRect.set({
+        //     left: 300,
+        //   });
+        //   c.renderAll();
+        // }, 1000);
+        // // pathRect.set({
+        // //   left: 100,
+        // // });
 
-      //   setImgObj(img2);
-      //   c.renderAll();
-      //   setPathObj(pathRect);
-      // });
+        setImgObj(img2);
+        c.renderAll();
+        setPathObj(pathRect);
+      });
       c.renderAll();
-
-      setPathObj(pathRect);
-
-      c.on("object:moving", (e) => change(c, pathRect, e));
-      c.on("object:scaling", (e) => change(c, pathRect, e));
+      setCanvas(c);
 
       // 设置背景
       // c.setBackgroundImage(img, c.renderAll.bind(c));
@@ -275,55 +225,33 @@ function Fabric() {
     //   ctx.arc(100, 100, 200, 0, Math.PI*2, true);
     // }
     // add();
-  }, [change]);
+  }, []);
 
   const small = () => {
-    console.log(pathObj, "999---", info);
-    setSrc(
-      canvas.toDataURL({
-        left: 0,
-        top: 0,
-        width: 100,
-        height: 100,
-        ...info,
-      })
-    );
-    // setTimeout(() => {
-    //   // pathObj.set({
-    //   //   left: 300,
-    //   //   width: 300,
-    //   //   height: 300,
-    //   // });
-    //   // canvas.add(imgObj);
-    //   // canvas.renderAll();
-    //   pathObj.animate(
-    //     {
-    //       left: 200,
-    //     },
-    //     {
-    //       duration: 900,
-    //       onChange: canvas.requestRenderAll.bind(canvas),
-    //       // onComplete:animateRight,
-    //     }
-    //   );
-    // }, 2000);
+    console.log(pathObj, "999---", canvas);
+
+    setTimeout(() => {
+      // pathObj.set({
+      //   left: 300,
+      //   width: 300,
+      //   height: 300,
+      // });
+      // canvas.add(imgObj);
+      // canvas.renderAll();
+      pathObj.animate(
+        {
+          left: 200,
+        },
+        {
+          duration: 900,
+          onChange: canvas.requestRenderAll.bind(canvas),
+          // onComplete:animateRight,
+        }
+      );
+    }, 2000);
     // canvas.remove(imgObj);
   };
-  let l = 100;
   const big = () => {
-    // pathObj.set()
-
-    // setInterval(() => {
-    l = l + 100;
-    if (l > 600) {
-      l = 0;
-    }
-    pathObj.set({
-      left: l,
-    });
-    canvas.renderAll();
-    // }, 500);
-
     // const p = new fabric.Rect({
     //   width: 100,
     //   height: 200,
@@ -354,16 +282,10 @@ function Fabric() {
         <Button type="dashed" onClick={small}>
           缩小
         </Button>
-        <Button type="dashed" onClick={small}>
-          裁剪
-        </Button>
       </Control>
       <Content>
         <canvas id="main" height="360" width="800"></canvas>
       </Content>
-      <div>
-        img-{src ? <img src={src} alt="img"></img> : <span>no-img</span>}
-      </div>
     </Box>
   );
 }
