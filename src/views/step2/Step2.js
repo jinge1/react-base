@@ -10,11 +10,11 @@ import girl from "@/assets/girl.jpeg";
 // 防抖函数
 function debounce (fn, delay) {
   let timmer = null
-  return (...args) => {
+  return () => {
     if (timmer) {
       clearTimeout(timmer)
     }
-    timmer = setTimeout(() => fn(...args), delay)
+    timmer = setTimeout(fn, delay)
   }
 }
 
@@ -48,19 +48,18 @@ function Fabric (props) {
   const canvasEle = useRef(null)
   const [boxSize, setBoxSize] = useState({})
   const [canvas, setCanvas] = useState(null)
-  // const [ratio, setRatio] = useState(1)
-  const ratio = useRef(1)
+  const [ratio, setRatio] = useState(1)
 
   /** 
    * 以某点为中心点缩放画布
    * obj canvas对象
    * left 中心点横坐标
    * top 中心点纵坐标
-   * r 缩放比例
+   * ratio 缩放比例
    */
-  const setZoomCanvas = useCallback((obj, left, top, r) => {
+  const setZoomCanvas = useCallback((obj, left, top, ratio) => {
     const zoomPoint = new fabric.Point(left, top);
-    obj.zoomToPoint(zoomPoint, r);
+    obj.zoomToPoint(zoomPoint, ratio);
   }, [])
 
   const changeBoxSize = useCallback((obj, width, height) => {
@@ -130,36 +129,14 @@ function Fabric (props) {
       setRelativePan(obj, (boxWidth - width * initRatio) / 2 - left, (boxHeight - height * initRatio) / 2 - top)
 
       // 存储缩放比例
-      ratio.current = initRatio
-      console.log(ratio, 'ratio---')
+      setRatio(initRatio)
     })
 
   }, [setZoomCanvas, setRelativePan, imgUrl, ratioStep])
 
-  console.log(ratio, '---')
-
-  // 画布事件设置
-  const setCanvasEvents = useCallback(() => {
-    console.log('123')
-    if (!canvas) {
-      return false
-    }
-    canvas.on({
-      // 鼠标滚动缩放
-      "mouse:wheel": ({ e }) => {
-        const { deltaY, offsetX, offsetY } = e;
-        const r = ratio.current
-        let nextRatio = deltaY > 0 ? r - ratioStep : r + ratioStep
-        nextRatio = Math.max(ratioStep, nextRatio)
-        // 设置画布基于画布中心点缩放
-        setZoomCanvas(canvas, offsetX, offsetY, nextRatio)
-        // setRatio(nextRatio)
-        ratio.current = nextRatio
-      },
-    })
-  }, [canvas, ratioStep, setZoomCanvas])
-
+  // 初始化画布
   useEffect(() => {
+    console.log('add0---')
     const { offsetWidth = 300, offsetHeight = 300 } = canvasBox.current
     const canvasObj = new fabric.Canvas(canvasEle.current, {
       // 选中对象不会到最高层，按原层次摆放
@@ -176,7 +153,6 @@ function Fabric (props) {
 
     // 初始化画布
     initCanvas(canvasObj, offsetWidth, offsetHeight)
-
   }, [initCanvas, changeBoxSize])
 
   // 监听窗口大小改变，动态需改缩放比例
@@ -203,16 +179,13 @@ function Fabric (props) {
       setRelativePan(canvas, (offsetWidth - width) / 2, (offsetHeight - height) / 2)
 
     }, 500)
+    console.log('add---')
     window.addEventListener('resize', changeSize)
     return () => {
+      console.log('add3---')
       window.removeEventListener('resize', changeSize)
     }
   }, [canvas, boxSize, changeBoxSize, setRelativePan])
-
-  useEffect(() => {
-    // 设置
-    setCanvasEvents()
-  }, [setCanvasEvents])
 
   // 点击放大缩小
   const changeRatio = (r) => {
@@ -220,18 +193,17 @@ function Fabric (props) {
     const { width, height } = boxSize
     // 设置画布基于画布中心点缩放
     setZoomCanvas(canvas, width / 2, height / 2, temp)
-    // setRatio(temp)
-    ratio.current = temp
+    setRatio(temp)
   }
 
   return (
     <Sub>
       <Control>
-        <Button onClick={() => changeRatio(ratio.current + ratioStep)} type="primary" shape="round" icon={<PlusCircleOutlined />} size="small">
+        <Button onClick={() => changeRatio(ratio + ratioStep)} type="primary" shape="round" icon={<PlusCircleOutlined />} size="small">
           放大
         </Button>
-        <RatioText>{parseInt(ratio.current * 100)}%</RatioText>
-        <Button onClick={() => changeRatio(ratio.current - ratioStep)} type="primary" shape="round" icon={<MinusCircleOutlined />} size="small">
+        <RatioText>{parseInt(ratio * 100)}%</RatioText>
+        <Button onClick={() => changeRatio(ratio - ratioStep)} type="primary" shape="round" icon={<MinusCircleOutlined />} size="small">
           缩小
         </Button>
       </Control>
