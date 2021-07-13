@@ -43,7 +43,7 @@ const RatioText = styled.span`
 `;
 
 function Fabric (props) {
-  const { ratioStep = 0.05, imgUrl = girl } = props
+  const { ratioStep = 0.05, imgUrl = girl, createLimit = 10 } = props
   const canvasBox = useRef(null)
   const canvasEle = useRef(null)
   const [boxSize, setBoxSize] = useState({})
@@ -131,19 +131,24 @@ function Fabric (props) {
 
       // 存储缩放比例
       ratio.current = initRatio
-      console.log(ratio, 'ratio---')
     })
 
   }, [setZoomCanvas, setRelativePan, imgUrl, ratioStep])
 
-  console.log(ratio, '---')
+  const updateDraw = useCallback((obj) => {
+    console.log(obj, 'oo')
+    const { fill, width, height, left, top } = obj
+    canvas.remove(obj)
+    canvas.add(new fabric.Rect({ fill, width, height, left, top }))
+  }, [canvas])
 
   // 画布事件设置
   const setCanvasEvents = useCallback(() => {
-    console.log('123')
     if (!canvas) {
       return false
     }
+    let start = null
+    let tempRect = null
     canvas.on({
       // 鼠标滚动缩放
       "mouse:wheel": ({ e }) => {
@@ -156,8 +161,51 @@ function Fabric (props) {
         // setRatio(nextRatio)
         ratio.current = nextRatio
       },
+      // 鼠标按下，
+      "mouse:down": ({ e, target }) => {
+        if (!target) {
+          const { x, y } = canvas.getPointer(e);
+          start = { x, y };
+        }
+      },
+      "mouse:move": ({ e }) => {
+        if (start) {
+          const { x, y } = canvas.getPointer(e.e);
+          const { x: sX, y: sY } = start;
+          const width = Math.abs(x - sX);
+          const height = Math.abs(y - sY);
+          if (
+            !tempRect &&
+            width > createLimit &&
+            height > createLimit
+          ) {
+            tempRect = new fabric.Rect({
+              fill: "rgba(238, 122, 233, 0.5)",
+              width,
+              height,
+              left: Math.min(x, sX),
+              top: Math.min(y, sY),
+            })
+            canvas.add(tempRect)
+          }
+          if (tempRect) {
+            tempRect.set({
+              width,
+              height,
+              left: Math.min(x, sX),
+              top: Math.min(y, sY),
+            })
+            canvas.renderAll();
+          }
+        }
+      },
+      "mouse:up": ({ e }) => {
+        start = null
+        updateDraw(tempRect)
+        tempRect = null
+      },
     })
-  }, [canvas, ratioStep, setZoomCanvas])
+  }, [canvas, ratioStep, setZoomCanvas, createLimit, updateDraw])
 
   useEffect(() => {
     const { offsetWidth = 300, offsetHeight = 300 } = canvasBox.current
