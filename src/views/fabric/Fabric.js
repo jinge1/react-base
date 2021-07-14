@@ -48,6 +48,8 @@ function Fabric (props) {
   const canvasEle = useRef(null)
   const [boxSize, setBoxSize] = useState({})
   const [canvas, setCanvas] = useState(null)
+  const [clipRect, setClipRect] = useState(null)
+
   // const [ratio, setRatio] = useState(1)
   const ratio = useRef(1)
 
@@ -113,6 +115,32 @@ function Fabric (props) {
 
       // 渲染图片
       obj.add(img)
+      const bg = new fabric.Rect({ width: boxWidth / initRatio, height: boxHeight / initRatio, left: 0, top: 0, fill: 'rgba(0,0,0,0.5)' })
+      bg.set({
+        // 禁用对象事件
+        evented: false,
+        // 对象是否可选择
+        selectable: false
+      })
+      const pathRect = new fabric.Rect({
+        width: 0,
+        height: 0,
+        left: 0,
+        top: 0,
+        // 裁剪颠倒
+        inverted: true,
+        // clipPath从对象的中心开始定位，对象originX和originY不起任何作用
+        // absolutePositioned不是相对于对象的中心，而是仅仅定位在画布上
+        absolutePositioned: true,
+      });
+
+      bg.clipPath = pathRect
+      setClipRect(pathRect)
+      bg.set({
+        event: false,
+        selectable: false,
+      })
+      obj.add(bg)
 
       // 设置画布基于画布中心点缩放
       setZoomCanvas(obj, boxWidth / 2, boxHeight / 2, initRatio)
@@ -136,11 +164,27 @@ function Fabric (props) {
   }, [setZoomCanvas, setRelativePan, imgUrl, ratioStep])
 
   const updateDraw = useCallback((obj) => {
-    console.log(obj, 'oo')
-    const { fill, width, height, left, top } = obj
-    canvas.remove(obj)
-    canvas.add(new fabric.Rect({ fill, width, height, left, top }))
-  }, [canvas])
+    obj.clone((o) => {
+      const pre = canvas.getObjects().find(({ showId: id }) => id)
+      const showId = Date.now()
+      o.set({ showId })
+      console.log(clipRect, 'clipRect')
+      const { width, height, left, top } = o
+      if (clipRect) {
+        clipRect.set({
+          width, height, left, top
+        })
+      }
+
+      canvas.add(o)
+      canvas.remove(obj)
+      if (pre) {
+        // 删除前一个
+        canvas.remove(pre)
+      }
+      canvas.renderAll();
+    })
+  }, [canvas, clipRect])
 
   // 画布事件设置
   const setCanvasEvents = useCallback(() => {
@@ -163,6 +207,7 @@ function Fabric (props) {
       },
       // 鼠标按下，
       "mouse:down": ({ e, target }) => {
+        console.log(target, 'tt')
         if (!target) {
           const { x, y } = canvas.getPointer(e);
           start = { x, y };
@@ -201,8 +246,11 @@ function Fabric (props) {
       },
       "mouse:up": ({ e }) => {
         start = null
-        updateDraw(tempRect)
-        tempRect = null
+        if (tempRect) {
+          updateDraw(tempRect)
+          tempRect = null
+        }
+
       },
     })
   }, [canvas, ratioStep, setZoomCanvas, createLimit, updateDraw])
