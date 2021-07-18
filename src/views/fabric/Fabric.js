@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState, useCallback, useLayoutEffect } from "react";
 import { fabric } from "fabric";
 import styled from "@emotion/styled";
-import { Button } from "antd";
+import { Button, Radio } from "antd";
 import { PlusCircleOutlined, MinusCircleOutlined } from '@ant-design/icons';
 import girl from "@/assets/girl.jpeg";
 // import screen from "@/assets/screen.jpg";
@@ -47,11 +47,10 @@ function Fabric (props) {
   const canvasBox = useRef(null)
   const canvasEle = useRef(null)
   const [boxSize, setBoxSize] = useState({})
-  const [canvas, setCanvas] = useState(null)
   const [clipRect, setClipRect] = useState(null)
-
-  // const [ratio, setRatio] = useState(1)
-  const ratio = useRef(1)
+  const [ratio, setRatio] = useState(1)
+  const [moveType, setMoveType] = useState('1')
+  const canvasRef = useRef(null)
 
   /** 
    * 以某点为中心点缩放画布
@@ -60,15 +59,17 @@ function Fabric (props) {
    * top 中心点纵坐标
    * r 缩放比例
    */
-  const setZoomCanvas = useCallback((obj, left, top, r) => {
+  const setCanvasZoom = useCallback((left, top, r) => {
+    const { current } = canvasRef
     const zoomPoint = new fabric.Point(left, top);
-    obj.zoomToPoint(zoomPoint, r);
+    current.zoomToPoint(zoomPoint, r);
   }, [])
 
-  const changeBoxSize = useCallback((obj, width, height) => {
+  const changeBoxSize = useCallback((width, height) => {
+    const { current } = canvasRef
     // 设置canvas宽高
-    obj.setWidth(width)
-    obj.setHeight(height)
+    current.setWidth(width)
+    current.setHeight(height)
 
     // 存储当前可视区整体高度
     const docHeight = document.documentElement.clientHeight
@@ -86,136 +87,79 @@ function Fabric (props) {
    * x 水平偏移值(相对于当前的增减值)
    * y 垂直偏移值(相对于当前的增减值)
    */
-  const setRelativePan = useCallback((obj, x, y) => {
+  const setRelativePan = useCallback((x, y) => {
+    const { current } = canvasRef
     const point = new fabric.Point(x, y);
-    obj.relativePan(point);
+    current.relativePan(point);
   }, [])
 
-  // 初始化canvas
-  const initCanvas = useCallback((obj, boxWidth, boxHeight) => {
-    fabric.Image.fromURL(imgUrl, (img) => {
-      const { width, height } = img
-      // 以宽高比例较小值作为实际缩放比例
-      let initRatio = Math.min(boxWidth / width, boxHeight / height);
-
-      // 缩放比例最大为1，预留ratioStep为方便边缘操作
-      if (initRatio >= 1) {
-        initRatio = initRatio > 1 + ratioStep ? 1 : initRatio - ratioStep
-      }
-      if (initRatio < 1) {
-        initRatio = initRatio - ratioStep > 0 ? initRatio - ratioStep : initRatio
-      }
-
-      img.set({
-        // 禁用对象事件
-        evented: false,
-        // 对象是否可选择
-        selectable: false
-      })
-
-      // 渲染图片
-      obj.add(img)
-      const bg = new fabric.Rect({ width: boxWidth / initRatio, height: boxHeight / initRatio, left: 0, top: 0, fill: 'rgba(0,0,0,0.5)' })
-      bg.set({
-        // 禁用对象事件
-        evented: false,
-        // 对象是否可选择
-        selectable: false
-      })
-      const pathRect = new fabric.Rect({
-        width: 0,
-        height: 0,
-        left: 0,
-        top: 0,
-        // 裁剪颠倒
-        inverted: true,
-        // clipPath从对象的中心开始定位，对象originX和originY不起任何作用
-        // absolutePositioned不是相对于对象的中心，而是仅仅定位在画布上
-        absolutePositioned: true,
-      });
-
-      bg.clipPath = pathRect
-      setClipRect(pathRect)
-      bg.set({
-        event: false,
-        selectable: false,
-      })
-      obj.add(bg)
-
-      // 设置画布基于画布中心点缩放
-      setZoomCanvas(obj, boxWidth / 2, boxHeight / 2, initRatio)
-
-      // canvas 缩放及偏移信息
-      const { viewportTransform } = obj
-
-      // 缩放后的水平偏移
-      const left = viewportTransform[4]
-
-      // 缩放后的垂直偏移
-      const top = viewportTransform[5]
-
-      // 平移画布，使其在视觉上居中（这里的居中是基于画布的整体偏移，元素相对画布坐标并未改变）
-      setRelativePan(obj, (boxWidth - width * initRatio) / 2 - left, (boxHeight - height * initRatio) / 2 - top)
-
-      // 存储缩放比例
-      ratio.current = initRatio
-    })
-
-  }, [setZoomCanvas, setRelativePan, imgUrl, ratioStep])
+  // 获取初始缩放比例
+  const getInitRatio = useCallback((xRatio, yRatio) => {
+    // 以宽高比例较小值作为实际缩放比例
+    let initRatio = Math.min(xRatio, yRatio);
+    // 缩放比例最大为1，预留ratioStep为方便边缘操作
+    if (initRatio >= 1) {
+      initRatio = initRatio > 1 + ratioStep ? 1 : initRatio - ratioStep
+    }
+    if (initRatio < 1) {
+      initRatio = initRatio - ratioStep > 0 ? initRatio - ratioStep : initRatio
+    }
+    return initRatio
+  }, [ratioStep])
 
   const updateDraw = useCallback((obj) => {
+    const { current } = canvasRef
     obj.clone((o) => {
-      const pre = canvas.getObjects().find(({ showId: id }) => id)
+      const pre = current.getObjects().find(({ showId: id }) => id)
       const showId = Date.now()
       o.set({ showId })
-      console.log(clipRect, 'clipRect')
-      const { width, height, left, top } = o
-      if (clipRect) {
-        clipRect.set({
-          width, height, left, top
-        })
-      }
+      // console.log(clipRect, 'clipRect')
+      // const { width, height, left, top } = o
+      // if (clipRect) {
+      //   clipRect.set({
+      //     width, height, left, top
+      //   })
+      // }
 
-      canvas.add(o)
-      canvas.remove(obj)
+      // current.add(o)
+      // current.remove(obj)
       if (pre) {
         // 删除前一个
-        canvas.remove(pre)
+        // current.remove(pre)
       }
-      canvas.renderAll();
+      current.renderAll();
     })
-  }, [canvas, clipRect])
+  }, [])
 
+  console.log('aa')
   // 画布事件设置
   const setCanvasEvents = useCallback(() => {
-    if (!canvas) {
-      return false
-    }
     let start = null
     let tempRect = null
-    canvas.on({
+    const { current } = canvasRef
+    current.on({
       // 鼠标滚动缩放
       "mouse:wheel": ({ e }) => {
         const { deltaY, offsetX, offsetY } = e;
-        const r = ratio.current
+        const r = current.getZoom()
         let nextRatio = deltaY > 0 ? r - ratioStep : r + ratioStep
         nextRatio = Math.max(ratioStep, nextRatio)
         // 设置画布基于画布中心点缩放
-        setZoomCanvas(canvas, offsetX, offsetY, nextRatio)
+        setCanvasZoom(offsetX, offsetY, nextRatio)
         // setRatio(nextRatio)
-        ratio.current = nextRatio
+        // ratio.current = nextRatio
+        setRatio(nextRatio)
       },
       // 鼠标按下，
       "mouse:down": ({ e, target }) => {
-        console.log(target, 'tt')
         if (!target) {
-          const { x, y } = canvas.getPointer(e);
+          const { x, y } = current.getPointer(e);
           start = { x, y };
         }
       },
       "mouse:move": ({ e }) => {
         if (start) {
-          const { x, y } = canvas.getPointer(e.e);
+          const { x, y } = current.getPointer(e.e);
           const { x: sX, y: sY } = start;
           const width = Math.abs(x - sX);
           const height = Math.abs(y - sY);
@@ -231,7 +175,7 @@ function Fabric (props) {
               left: Math.min(x, sX),
               top: Math.min(y, sY),
             })
-            canvas.add(tempRect)
+            current.add(tempRect)
           }
           if (tempRect) {
             tempRect.set({
@@ -239,8 +183,12 @@ function Fabric (props) {
               height,
               left: Math.min(x, sX),
               top: Math.min(y, sY),
+              // 禁用对象事件
+              evented: false,
+              // 对象是否可选择
+              selectable: false
             })
-            canvas.renderAll();
+            current.renderAll();
           }
         }
       },
@@ -250,10 +198,35 @@ function Fabric (props) {
           updateDraw(tempRect)
           tempRect = null
         }
-
       },
     })
-  }, [canvas, ratioStep, setZoomCanvas, createLimit, updateDraw])
+  }, [ratioStep, setCanvasZoom, createLimit, updateDraw])
+
+  // 设置遮罩区域
+  const setClipPath = useCallback((info) => {
+    const { current } = canvasRef
+    const bgRect = new fabric.Rect({ fill: 'rgba(0,0,0,0.5)', ...info })
+    bgRect.set({
+      // 禁用对象事件
+      evented: false,
+      // 对象是否可选择
+      selectable: false
+    })
+    const pathRect = new fabric.Rect({
+      width: 300,
+      height: 300,
+      left: 100,
+      top: 100,
+      // 裁剪颠倒
+      inverted: true,
+      // clipPath从对象的中心开始定位，对象originX和originY不起任何作用
+      // absolutePositioned不是相对于对象的中心，而是仅仅定位在画布上
+      absolutePositioned: true,
+    });
+    bgRect.clipPath = pathRect
+    current.add(bgRect)
+    setClipRect(pathRect)
+  }, [])
 
   useEffect(() => {
     const { offsetWidth = 300, offsetHeight = 300 } = canvasBox.current
@@ -262,74 +235,75 @@ function Fabric (props) {
       preserveObjectStacking: true,
       // 缩放对象是否基于对象中心点
       // centeredScaling: true,
+      uniformScaling: false,
+      perPixelTargetFind: false
     });
-
+    canvasRef.current = canvasObj
     // 设置canvas宽高及存储宽高信息
-    changeBoxSize(canvasObj, offsetWidth, offsetHeight)
+    changeBoxSize(offsetWidth, offsetHeight)
 
-    // 存储canvas对象
-    setCanvas(canvasObj)
+    fabric.Image.fromURL(imgUrl, (img) => {
+      const { width, height } = img
+      const initRatio = getInitRatio(offsetWidth / width, offsetHeight / height)
+      img.set({
+        // 禁用对象事件
+        evented: false,
+        // 对象是否可选择
+        selectable: false
+      })
+      // 渲染图片
+      canvasObj.add(img)
+      setClipPath({
+        width: offsetWidth / initRatio,
+        height: offsetHeight / initRatio,
+        left: 0,
+        top: 0
+      })
+      setCanvasZoom(offsetWidth / 2, offsetHeight / 2, initRatio)
+      // canvas 缩放及偏移信息
+      const { viewportTransform } = canvasObj
 
-    // 初始化画布
-    initCanvas(canvasObj, offsetWidth, offsetHeight)
+      // 缩放后的水平偏移
+      const left = viewportTransform[4]
 
-  }, [initCanvas, changeBoxSize])
+      // 缩放后的垂直偏移
+      const top = viewportTransform[5]
 
-  // 监听窗口大小改变，动态需改缩放比例
-  useEffect(() => {
-    const changeSize = debounce(() => {
-      if (!canvas) {
-        return false
-      }
-      const { width, height, docHeight } = boxSize
-      // 这里不使用高度的原因是高度无法自适应改变，设置了高度后，再次缩小可能出现滚动条
-      const { offsetWidth } = canvasBox.current
+      // 平移画布，使其在视觉上居中（这里的居中是基于画布的整体偏移，元素相对画布坐标并未改变）
+      setRelativePan((offsetWidth - width * initRatio) / 2 - left, (offsetHeight - height * initRatio) / 2 - top)
 
-      // 当前可视区整体高度
-      const currDocHeight = document.documentElement.clientHeight
-      // 通过可视区变化百分比，动态计算改变后的高度
-      const offsetHeight = height / docHeight * currDocHeight
-      // 重置父级高度
-      canvasBox.current.style.height = `${offsetHeight}px`
-
-      // 设置canvas宽高及存储宽高信息
-      changeBoxSize(canvas, offsetWidth, offsetHeight)
-
-      // 偏移画布内容，使其相对位置保持不变
-      setRelativePan(canvas, (offsetWidth - width) / 2, (offsetHeight - height) / 2)
-
-    }, 500)
-    window.addEventListener('resize', changeSize)
-    return () => {
-      window.removeEventListener('resize', changeSize)
-    }
-  }, [canvas, boxSize, changeBoxSize, setRelativePan])
-
-  useEffect(() => {
-    // 设置
-    setCanvasEvents()
-  }, [setCanvasEvents])
+      setRatio(initRatio)
+      setCanvasEvents()
+    })
+  }, [changeBoxSize, getInitRatio, imgUrl, setClipPath, setCanvasZoom, setRelativePan, setRatio, setCanvasEvents])
 
   // 点击放大缩小
   const changeRatio = (r) => {
     const temp = r > 0 ? r : ratioStep
     const { width, height } = boxSize
     // 设置画布基于画布中心点缩放
-    setZoomCanvas(canvas, width / 2, height / 2, temp)
-    // setRatio(temp)
-    ratio.current = temp
+    setCanvasZoom(width / 2, height / 2, temp)
+    setRatio(temp)
+  }
+
+  const changeRadio = ({ target }) => {
+    console.log(target.value, 'eee')
   }
 
   return (
     <Sub>
       <Control>
-        <Button onClick={() => changeRatio(ratio.current + ratioStep)} type="primary" shape="round" icon={<PlusCircleOutlined />} size="small">
+        <Button onClick={() => changeRatio(ratio + ratioStep)} type="primary" shape="round" icon={<PlusCircleOutlined />} size="small">
           放大
         </Button>
-        <RatioText>{parseInt(ratio.current * 100)}%</RatioText>
-        <Button onClick={() => changeRatio(ratio.current - ratioStep)} type="primary" shape="round" icon={<MinusCircleOutlined />} size="small">
+        <RatioText>{parseInt(ratio * 100)}%</RatioText>
+        <Button onClick={() => changeRatio(ratio - ratioStep)} type="primary" shape="round" icon={<MinusCircleOutlined />} size="small">
           缩小
         </Button>
+        <Radio.Group style={{ marginLeft: 20 }} defaultValue={moveType} onChange={({ target }) => setMoveType(target.value)} buttonStyle="solid">
+          <Radio.Button value="1">create</Radio.Button>
+          <Radio.Button value="2">move</Radio.Button>
+        </Radio.Group>
       </Control>
       <Box ref={canvasBox}>
         <canvas ref={canvasEle}></canvas>
