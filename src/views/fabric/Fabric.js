@@ -43,12 +43,13 @@ const RatioText = styled.span`
 `;
 
 function Fabric (props) {
-  const { ratioStep = 0.05, imgUrl = girl, createLimit = 10 } = props
+  const { ratioStep = 0.05, angleStep = 90, imgUrl = girl, createLimit = 10 } = props
   const canvasBox = useRef(null)
   const canvasEle = useRef(null)
   const [boxSize, setBoxSize] = useState({})
   const [clipRect, setClipRect] = useState(null)
   const [ratio, setRatio] = useState(1)
+  const [angle, setAngle] = useState(0)
   const [moveType, setMoveType] = useState('1')
   const canvasRef = useRef(null)
 
@@ -175,7 +176,7 @@ function Fabric (props) {
               left: Math.min(x, sX),
               top: Math.min(y, sY),
             })
-            current.add(tempRect)
+            // current.add(tempRect)
           }
           if (tempRect) {
             tempRect.set({
@@ -236,11 +237,14 @@ function Fabric (props) {
       // 缩放对象是否基于对象中心点
       // centeredScaling: true,
       uniformScaling: false,
+      // isDrawingMode: true,
       perPixelTargetFind: false
     });
     canvasRef.current = canvasObj
     // 设置canvas宽高及存储宽高信息
     changeBoxSize(offsetWidth, offsetHeight)
+    console.log(canvasObj, 'canvasObj---')
+
 
     fabric.Image.fromURL(imgUrl, (img) => {
       const { width, height } = img
@@ -271,9 +275,12 @@ function Fabric (props) {
 
       // 平移画布，使其在视觉上居中（这里的居中是基于画布的整体偏移，元素相对画布坐标并未改变）
       setRelativePan((offsetWidth - width * initRatio) / 2 - left, (offsetHeight - height * initRatio) / 2 - top)
-
+      canvasObj.set({
+        angle: 30
+      })
       setRatio(initRatio)
       setCanvasEvents()
+      // canvasObj.setViewportTransform([1,0,0,1,30,0])
     })
   }, [changeBoxSize, getInitRatio, imgUrl, setClipPath, setCanvasZoom, setRelativePan, setRatio, setCanvasEvents])
 
@@ -285,6 +292,28 @@ function Fabric (props) {
     setCanvasZoom(width / 2, height / 2, temp)
     setRatio(temp)
   }
+  // 点击放大缩小
+  const changeAngle = (a) => {
+    const { current } = canvasRef
+    // const temp = r > 0 ? r : ratioStep
+    // const { width, height } = boxSize
+    // // 设置画布基于画布中心点缩放
+    // setCanvasZoom(width / 2, height / 2, temp)
+    // setRatio(temp)
+    setAngle(a)
+    const objs = current.getObjects()
+    const group = new fabric.Group([...objs], {
+      left: 0,
+      top: 0,
+      angle: 90,
+      originX: 'center',
+      originY: 'center'
+    });
+    current.add(group)
+    // const group = current.getActiveGroup()
+    console.log(current.getObjects(), '---')
+  }
+
 
   const changeRadio = ({ target }) => {
     console.log(target.value, 'eee')
@@ -299,6 +328,13 @@ function Fabric (props) {
         <RatioText>{parseInt(ratio * 100)}%</RatioText>
         <Button onClick={() => changeRatio(ratio - ratioStep)} type="primary" shape="round" icon={<MinusCircleOutlined />} size="small">
           缩小
+        </Button>
+        <Button onClick={() => changeAngle(angle + angleStep)} type="primary" shape="round" icon={<PlusCircleOutlined />} size="small">
+          左转
+        </Button>
+        <RatioText>{angle}%</RatioText>
+        <Button onClick={() => changeAngle(angle - angleStep)} type="primary" shape="round" icon={<MinusCircleOutlined />} size="small">
+          右转
         </Button>
         <Radio.Group style={{ marginLeft: 20 }} defaultValue={moveType} onChange={({ target }) => setMoveType(target.value)} buttonStyle="solid">
           <Radio.Button value="1">create</Radio.Button>
