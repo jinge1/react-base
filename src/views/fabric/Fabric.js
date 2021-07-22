@@ -300,20 +300,26 @@ function Fabric (props) {
     // // 设置画布基于画布中心点缩放
     // setCanvasZoom(width / 2, height / 2, temp)
     // setRatio(temp)
-    setAngle(a)
+    
     const objs = current.getObjects()
     const group = new fabric.Group([...objs], {
       left: 0,
       top: 0,
-      angle: 90,
-      originX: 'center',
-      originY: 'center'
+      // angle: 90,
+      originX: 'left',
+      originY: 'bottom'
     });
+    group.rotate(90)
     current.add(group)
-    // const group = current.getActiveGroup()
-    console.log(current.getObjects(), '---')
+    setAngle(a)
+    // group.rotatePoint(new fabric.Point(300, 300), 90)
+    current.discardActiveObject()
+    // current.set({
+    //   angle: 60
+    // })
+    console.log(group.rotatePoint, '---')
   }
-
+  // viewportCenterObject
 
   const changeRadio = ({ target }) => {
     console.log(target.value, 'eee')
