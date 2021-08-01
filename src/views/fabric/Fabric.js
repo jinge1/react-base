@@ -7,17 +7,6 @@ import girl from "@/assets/girl.jpeg";
 // import screen from "@/assets/screen.jpg";
 // import girl from "@/assets/mei.jpeg";
 
-// 防抖函数
-function debounce (fn, delay) {
-  let timmer = null
-  return (...args) => {
-    if (timmer) {
-      clearTimeout(timmer)
-    }
-    timmer = setTimeout(() => fn(...args), delay)
-  }
-}
-
 const Sub = styled.div`
   background: #eee;
   height: 100%;
@@ -268,13 +257,17 @@ function Fabric (props) {
       const { viewportTransform } = canvasObj
 
       // 缩放后的水平偏移
-      const left = viewportTransform[4]
+      // const left = viewportTransform[4]
 
-      // 缩放后的垂直偏移
-      const top = viewportTransform[5]
+      // // 缩放后的垂直偏移
+      // const top = viewportTransform[5]
 
       // 平移画布，使其在视觉上居中（这里的居中是基于画布的整体偏移，元素相对画布坐标并未改变）
-      setRelativePan((offsetWidth - width * initRatio) / 2 - left, (offsetHeight - height * initRatio) / 2 - top)
+      // setRelativePan((offsetWidth - width * initRatio) / 2 - left, (offsetHeight - height * initRatio) / 2 - top)
+      const v = [...viewportTransform]
+      v[4] = (offsetWidth - width * initRatio) / 2
+      v[5] = (offsetHeight - height * initRatio) / 2
+      canvasObj.setViewportTransform(v)
       canvasObj.set({
         angle: 30
       })
@@ -295,29 +288,25 @@ function Fabric (props) {
   // 点击放大缩小
   const changeAngle = (a) => {
     const { current } = canvasRef
-    // const temp = r > 0 ? r : ratioStep
-    // const { width, height } = boxSize
-    // // 设置画布基于画布中心点缩放
-    // setCanvasZoom(width / 2, height / 2, temp)
-    // setRatio(temp)
-    
-    const objs = current.getObjects()
-    const group = new fabric.Group([...objs], {
-      left: 0,
-      top: 0,
-      // angle: 90,
-      originX: 'left',
-      originY: 'bottom'
-    });
-    group.rotate(90)
-    current.add(group)
-    setAngle(a)
-    // group.rotatePoint(new fabric.Point(300, 300), 90)
-    current.discardActiveObject()
-    // current.set({
-    //   angle: 60
-    // })
-    console.log(group.rotatePoint, '---')
+    // const { viewportTransform, width, height } = current
+    // const v = [...viewportTransform]
+    // const angle = 90
+    // // const next = [Math.cos(angle * Math.PI / 180), Math.sin(angle * Math.PI / 180), -Math.sin(angle * Math.PI / 180), Math.cos(angle * Math.PI / 180), width, 0]
+    // v[1] = Math.sin(angle * Math.PI / 180)
+    // v[2] = -Math.sin(angle * Math.PI / 180)
+    // current.setViewportTransform(v)
+    const dataURL = current.toDataURL({
+      format: `image/jpeg`,
+      top: -100,
+      left: -100,
+      width: 200,
+      height: 200,
+      multiplier: 1
+    })
+    console.log(dataURL, 'dataURL--')
+
+    // console.log(viewportTransform, current, 'viewportTransform')
+    console.log(1)
   }
   // viewportCenterObject
 
