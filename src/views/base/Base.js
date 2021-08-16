@@ -145,6 +145,22 @@ function Base() {
       })
     }
 
+    const getClipPosition = (type, clipInfo, imgInfo) => {
+      const { width, height } = imgInfo
+      if (type === 1) {
+        return {
+          ...clipInfo,
+          left: -width / 2,
+          top: -height / 2,
+        }
+      }
+      return {
+        ...clipInfo,
+        left: clipInfo.width / 2,
+        top: clipInfo.height / 2,
+      }
+    }
+
     // 初始化渲染
     const initDraw = () => {
       const { current } = fabricList
@@ -234,25 +250,26 @@ function Base() {
           height,
           fill: 'rgba(0,0,0,0.5)',
         })
-        const clip = getRect({
+        const clipPosition = {
           width: 200,
           height: 100,
           left: 0,
           top: 0,
+        }
+        // console.log(getClipPosition(1, clipPosition), '--99')
+        const clip = getRect({
+          ...getClipPosition(1, clipPosition, { width, height }),
           // 裁剪颠倒
           inverted: true,
           // clipPath从对象的中心开始定位，对象originX和originY不起任何作用
           // absolutePositioned不是相对于对象的中心，而是仅仅定位在画布上
-          absolutePositioned: true,
+          // absolutePositioned: true,
         })
         const active = getRect({
-          width: 200,
-          height: 100,
-          left: 0,
-          top: 0,
+          ...getClipPosition(2, clipPosition, { width, height }),
           originX: 'center',
           originY: 'center',
-          fill: 'rgba(255, 0, 0, 0.5)'
+          fill: 'rgba(255, 0, 0, 0.5)',
         })
         rect.clipPath = clip
         const group = new fabric.Group([img, rect], {
