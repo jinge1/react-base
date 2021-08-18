@@ -1,15 +1,15 @@
-import styled from '@emotion/styled'
-import { useEffect, useRef, useState, useCallback } from 'react'
-import { fabric } from 'fabric'
-import { Button, Modal } from 'antd'
+import styled from "@emotion/styled";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { fabric } from "fabric";
+import { Button, Modal } from "antd";
 import {
   PlusCircleOutlined,
   MinusCircleOutlined,
   UndoOutlined,
   RedoOutlined,
-} from '@ant-design/icons'
-import girl from '@/assets/screen.jpg'
-import mei from '@/assets/mei.jpeg'
+} from "@ant-design/icons";
+import girl from "@/assets/screen.jpg";
+import mei from "@/assets/mei.jpeg";
 
 const Page = styled.div`
   padding: 20px;
@@ -17,27 +17,27 @@ const Page = styled.div`
     margin: 0 0 10px 0;
     padding: 0;
   }
-`
+`;
 const Title = styled.div`
   font-size: 18px;
   margin-bottom: 10px;
   font-weight: bold;
-`
-const Desc = styled.div``
-const List = styled.div``
+`;
+const Desc = styled.div``;
+const List = styled.div``;
 const Item = styled.div`
   box-shadow: 0 0 10px #ccc;
   margin-bottom: 10px;
-`
+`;
 const ItemTop = styled.div`
   padding: 10px;
   display: flex;
   justify-content: space-between;
-`
+`;
 const CanvasBox = styled.div`
   height: ${(props) => props.height}px;
   overflow: hidden;
-`
+`;
 const CodeBox = styled.div`
   max-height: 300px;
   overflow: auto;
@@ -45,31 +45,36 @@ const CodeBox = styled.div`
   code {
     white-space: break-spaces;
   }
-`
+`;
 const IconBox = styled.span`
   font-size: 22px;
   margin-right: 20px;
-`
+`;
 
 const defaultRectInfo = {
   width: 100,
   height: 100,
   left: 0,
   top: 0,
-  fill: 'orange',
-}
+  fill: "orange",
+};
 
 function Base() {
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [resultJson, setResultJson] = useState('')
-
-  const list = useRef(null)
-  const canvas0 = useRef(null)
-  const canvas1 = useRef(null)
-  const canvas2 = useRef(null)
-  const fabricList = useRef([])
-  const ratioStep = 0.05
-  const createLimit = 10
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [resultJson, setResultJson] = useState("");
+  const [clipPosition, setClipPosition] = useState({
+    width: 200,
+    height: 100,
+    left: 100,
+    top: 50,
+  });
+  const list = useRef(null);
+  const canvas0 = useRef(null);
+  const canvas1 = useRef(null);
+  const canvas2 = useRef(null);
+  const fabricList = useRef([]);
+  const ratioStep = 0.05;
+  const createLimit = 10;
 
   /**
    * 以某点为中心点缩放画布
@@ -79,183 +84,191 @@ function Base() {
    * r 缩放比例
    */
   const setCanvasZoom = useCallback((fabricObj, left, top, r) => {
-    const zoomPoint = new fabric.Point(left, top)
-    fabricObj.zoomToPoint(zoomPoint, r)
-  }, [])
+    const zoomPoint = new fabric.Point(left, top);
+    fabricObj.zoomToPoint(zoomPoint, r);
+  }, []);
 
   // 生成fabric矩形
   const getRect = useCallback((info = {}) => {
     return new fabric.Rect({
       ...defaultRectInfo,
       ...info,
-    })
-  }, [])
+    });
+  }, []);
 
   // 生成fabric图片
   const getImg = useCallback((url, info = {}) => {
     return new Promise((resolve, reject) => {
       fabric.Image.fromURL(url, (img) => {
         if (Object.keys(info).length > 0) {
-          img.set(info)
+          img.set(info);
         }
-        resolve(img)
-      })
-    })
-  }, [])
+        resolve(img);
+      });
+    });
+  }, []);
 
   // 缩放设置
   const changeSize = useCallback((index, type = 1) => {
-    const { current } = fabricList
-    const obj = current[index]
-    const width = obj.getWidth()
-    const height = obj.getHeight()
-    const zoom = obj.getZoom() + type * ratioStep
-    const zoomPoint = new fabric.Point(width / 2, height / 2)
-    obj.zoomToPoint(zoomPoint, zoom)
-  }, [])
+    const { current } = fabricList;
+    const obj = current[index];
+    const width = obj.getWidth();
+    const height = obj.getHeight();
+    const zoom = obj.getZoom() + type * ratioStep;
+    const zoomPoint = new fabric.Point(width / 2, height / 2);
+    obj.zoomToPoint(zoomPoint, zoom);
+  }, []);
 
   // 缩放缩放角度
   const changeAngle = useCallback((index, type = 1) => {
-    const { current } = fabricList
-    const obj = current[index]
-    const eles = obj.getObjects()
-    console.log(eles, 'eles---')
+    const { current } = fabricList;
+    const obj = current[index];
+    const eles = obj.getObjects();
+    console.log(eles, "eles---");
     eles.forEach((ele) => {
-      const { angle = 0 } = ele
-      let nextAngle = angle + 90 * type
+      const { angle = 0 } = ele;
+      let nextAngle = angle + 90 * type;
       if (nextAngle > 360) {
-        nextAngle = nextAngle - 360
+        nextAngle = nextAngle - 360;
       }
       if (nextAngle < 0) {
-        nextAngle = 360 + nextAngle
+        nextAngle = 360 + nextAngle;
       }
       ele.set({
         angle: nextAngle,
-      })
-    })
-    obj.renderAll()
-  }, [])
+      });
+    });
+    obj.renderAll();
+  }, []);
 
   useEffect(() => {
     // 页面大小改变的时候，重置canvas宽度
     const resize = () => {
-      const boxWidth = list.current.offsetWidth
+      const boxWidth = list.current.offsetWidth;
       fabricList.current.forEach((item) => {
-        item.setWidth(boxWidth)
-      })
-    }
+        item.setWidth(boxWidth);
+      });
+    };
 
+    /**
+     * 获取裁剪位置信息
+     * @param {number} type 1 裁剪区 2 拖拽对象
+     * @param {*} clipInfo
+     * @param {*} imgInfo
+     * @returns
+     */
     const getClipPosition = (type, clipInfo, imgInfo) => {
-      const { width, height } = imgInfo
+      const { width, height } = imgInfo;
+      const { width: cWidth, height: cHeight, left, top } = clipInfo;
       if (type === 1) {
         return {
           ...clipInfo,
-          left: -width / 2,
-          top: -height / 2,
-        }
+          left: -width / 2 + left,
+          top: -height / 2 + top,
+        };
       }
       return {
         ...clipInfo,
-        left: clipInfo.width / 2,
-        top: clipInfo.height / 2,
-      }
-    }
+        left: cWidth / 2 + left,
+        top: cHeight / 2 + top,
+      };
+    };
 
     // 初始化渲染
     const initDraw = () => {
-      const { current } = fabricList
+      const { current } = fabricList;
       const draw0 = async () => {
-        const fabricObj = current[0]
+        const fabricObj = current[0];
         const img = await getImg(girl, {
           scaleX: 0.15,
           scaleY: 0.15,
           left: 100,
           top: 0,
           angle: 30,
-        })
-        const rect = getRect({ left: 400, top: 50 })
-        fabricObj.add(img)
-        fabricObj.add(rect)
-      }
+        });
+        const rect = getRect({ left: 400, top: 50 });
+        fabricObj.add(img);
+        fabricObj.add(rect);
+      };
       const draw1 = () => {
-        const fabricObj = current[1]
-        const rect = getRect({ left: 100, top: 50 })
-        let start = null
-        let showId = ''
-        fabricObj.add(rect)
+        const fabricObj = current[1];
+        const rect = getRect({ left: 100, top: 50 });
+        let start = null;
+        let showId = "";
+        fabricObj.add(rect);
         fabricObj.on({
           // 鼠标滚动缩放
-          'mouse:wheel': ({ e }) => {
-            const { deltaY, offsetX, offsetY } = e
-            const r = fabricObj.getZoom()
-            let nextRatio = deltaY > 0 ? r - ratioStep : r + ratioStep
-            nextRatio = Math.max(ratioStep, nextRatio)
+          "mouse:wheel": ({ e }) => {
+            const { deltaY, offsetX, offsetY } = e;
+            const r = fabricObj.getZoom();
+            let nextRatio = deltaY > 0 ? r - ratioStep : r + ratioStep;
+            nextRatio = Math.max(ratioStep, nextRatio);
             // 设置画布基于画布中心点缩放
-            setCanvasZoom(fabricObj, offsetX, offsetY, nextRatio)
+            setCanvasZoom(fabricObj, offsetX, offsetY, nextRatio);
           },
           // 鼠标按下，
-          'mouse:down': ({ e, target }) => {
+          "mouse:down": ({ e, target }) => {
             if (!target) {
-              const { x, y } = fabricObj.getPointer(e)
-              start = { x, y }
+              const { x, y } = fabricObj.getPointer(e);
+              start = { x, y };
             }
           },
-          'mouse:move': ({ e }) => {
+          "mouse:move": ({ e }) => {
             if (start) {
-              const { x, y } = fabricObj.getPointer(e.e)
-              const { x: sX, y: sY } = start
-              const width = Math.abs(x - sX)
-              const height = Math.abs(y - sY)
+              const { x, y } = fabricObj.getPointer(e.e);
+              const { x: sX, y: sY } = start;
+              const width = Math.abs(x - sX);
+              const height = Math.abs(y - sY);
               if (!showId && width > createLimit && height > createLimit) {
-                showId = Date.now()
+                showId = Date.now();
                 const rect = getRect({
                   width,
                   height,
                   left: Math.min(x, sX),
                   top: Math.min(y, sY),
-                  fill: 'gray',
-                })
-                rect.set({ showId })
-                fabricObj.add(rect)
+                  fill: "gray",
+                });
+                rect.set({ showId });
+                fabricObj.add(rect);
               }
               const obj = fabricObj
                 .getObjects()
-                .find((item) => item.showId === showId)
+                .find((item) => item.showId === showId);
               if (obj) {
                 obj.set({
                   width,
                   height,
                   left: Math.min(x, sX),
                   top: Math.min(y, sY),
-                })
-                fabricObj.renderAll()
+                });
+                fabricObj.renderAll();
               }
             }
           },
-          'mouse:up': ({ e }) => {
-            start = null
-            showId = ''
+          "mouse:up": ({ e }) => {
+            start = null;
+            showId = "";
             // if (tempRect) {
             //   tempRect = null
             // }
           },
-        })
-      }
+        });
+      };
       const draw2 = async () => {
-        const fabricObj = current[2]
-        const img = await getImg(mei)
-        const { width, height } = img
+        const fabricObj = current[2];
+        const img = await getImg(mei);
+        const { width, height } = img;
         const rect = getRect({
           width,
           height,
-          fill: 'rgba(0,0,0,0.5)',
-        })
-        const clipPosition = {
-          width: 200,
-          height: 100,
-          left: 0,
-          top: 0,
-        }
+          fill: "rgba(0,0,0,0.5)",
+        });
+        // const clipPosition = {
+        //   width: 200,
+        //   height: 100,
+        //   left: 0,
+        //   top: 0,
+        // };
         // console.log(getClipPosition(1, clipPosition), '--99')
         const clip = getRect({
           ...getClipPosition(1, clipPosition, { width, height }),
@@ -264,19 +277,19 @@ function Base() {
           // clipPath从对象的中心开始定位，对象originX和originY不起任何作用
           // absolutePositioned不是相对于对象的中心，而是仅仅定位在画布上
           // absolutePositioned: true,
-        })
+        });
         const active = getRect({
           ...getClipPosition(2, clipPosition, { width, height }),
-          originX: 'center',
-          originY: 'center',
-          fill: 'rgba(255, 0, 0, 0.5)',
-        })
-        rect.clipPath = clip
+          originX: "center",
+          originY: "center",
+          fill: "rgba(255, 0, 0, 0.5)",
+        });
+        rect.clipPath = clip;
         const group = new fabric.Group([img, rect], {
           left: width / 2,
           top: height / 2,
-          originX: 'center',
-          originY: 'center',
+          originX: "center",
+          originY: "center",
           // 禁用对象事件
           evented: false,
           // 对象是否可选择
@@ -284,22 +297,33 @@ function Base() {
           // 操作旋转控制点时候，旋转中心点是自身中心，还是自身左上角
           // 该菜蔬动态设置angle无效
           // centeredRotation: true,
-        })
+        });
 
         // let showId = ''
         // fabricObj.add(img)
-        fabricObj.add(group)
-        fabricObj.add(active)
+        fabricObj.add(group);
+        fabricObj.add(active);
 
-        let start = null
+        // let start = null;
+        const updateClip = () => {
+          const { left, top, zoomX, zoomY } = active;
+
+          console.log(active, "active---");
+        };
         fabricObj.on({
-          // 鼠标按下，
-          'mouse:down': ({ e, target }) => {
-            if (!target) {
-              const { x, y } = fabricObj.getPointer(e)
-              start = { x, y }
-            }
+          "object:scaling": (...args) => {
+            updateClip();
           },
+          "object:moving": () => {
+            updateClip();
+          },
+          // // 鼠标按下，
+          // "mouse:down": ({ e, target }) => {
+          //   if (!target) {
+          //     const { x, y } = fabricObj.getPointer(e);
+          //     start = { x, y };
+          //   }
+          // },
           // 'mouse:move': ({ e }) => {
           //   if (start) {
           //     const { x, y } = fabricObj.getPointer(e.e)
@@ -338,12 +362,12 @@ function Base() {
           //   //   tempRect = null
           //   // }
           // },
-        })
-      }
-      draw0()
-      draw1()
-      draw2()
-    }
+        });
+      };
+      draw0();
+      draw1();
+      draw2();
+    };
 
     // 初始化生成fabric对象列表，高度统一为父级节点高度，宽度随页面宽度自适应
     const init = () => {
@@ -353,22 +377,22 @@ function Base() {
             height: current.parentNode.offsetHeight,
             // centeredRotation: true,
           })
-      )
-      initDraw()
-      resize()
-    }
-    init()
-    window.addEventListener('resize', resize)
+      );
+      initDraw();
+      resize();
+    };
+    init();
+    window.addEventListener("resize", resize);
     return () => {
       // 组件卸载前移除事件
-      window.removeEventListener('resize', resize)
-    }
-  }, [getRect, getImg, setCanvasZoom])
+      window.removeEventListener("resize", resize);
+    };
+  }, [getRect, getImg, setCanvasZoom]);
 
   // 获取canvas对象位置信息
   const getInfo = (index) => {
-    const { current } = fabricList
-    const { objects } = current[index].toJSON()
+    const { current } = fabricList;
+    const { objects } = current[index].toJSON();
     setResultJson(
       JSON.stringify(
         objects.map(
@@ -399,9 +423,9 @@ function Base() {
         null,
         2
       )
-    )
-    setIsModalVisible(true)
-  }
+    );
+    setIsModalVisible(true);
+  };
   return (
     <Page>
       <Desc>
@@ -484,6 +508,6 @@ function Base() {
         </CodeBox>
       </Modal>
     </Page>
-  )
+  );
 }
-export default Base
+export default Base;
