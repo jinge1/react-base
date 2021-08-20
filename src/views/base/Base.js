@@ -306,17 +306,6 @@ function Base() {
 
         // let start = null;
         const updateClip = () => {
-<<<<<<< HEAD
-          const { left, top, zoomX, zoomY } = active;
-          clip.set({
-            left,
-            top,
-            zoomX,
-            zoomY,
-          });
-          fabricObj.renderAll();
-        };
-=======
           const { left, top, zoomX, zoomY } = active
           clip.set({
             left: left,
@@ -327,22 +316,10 @@ function Base() {
           fabricObj.renderAll()
           console.log(left, top, zoomX, zoomY, 'active---')
         }
->>>>>>> 17688f0c26f7469fea7d1c112cf87b0b5f724746
         fabricObj.on({
           'object:scaling': (...args) => {
             updateClip()
           },
-<<<<<<< HEAD
-          "object:moving": () => {
-            updateClip();
-          }
-        });
-      };
-      draw0();
-      draw1();
-      draw2();
-    };
-=======
           'object:moving': () => {
             updateClip()
           },
@@ -397,7 +374,6 @@ function Base() {
       draw1()
       draw2()
     }
->>>>>>> 17688f0c26f7469fea7d1c112cf87b0b5f724746
 
     // 初始化生成fabric对象列表，高度统一为父级节点高度，宽度随页面宽度自适应
     const init = () => {
