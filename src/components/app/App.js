@@ -12,7 +12,7 @@ import styled from "@emotion/styled";
 import "./index.css";
 
 const Page = styled.div`
-  height:100%;
+  height: 100%;
   display: flex;
   flex-flow: column;
 `;
@@ -34,44 +34,52 @@ const Loading = styled.div`
   justify-content: center;
 `;
 
-function App () {
-  const menuList = useMemo(() => [
-    // {
-    //   text: "about",
-    //   path: "/about",
-    //   component: lazy(() => import("../../views/about/About"))
-    // },
-    {
-      text: "基本功能",
-      path: "/base",
-      component: lazy(() => import("../../views/base/Base"))
-    },
-    {
-      text: "product",
-      path: "/product",
-      component: lazy(() => import("../../views/product/Product"))
-    },
-    {
-      text: "fabric",
-      path: "/fabric",
-      component: lazy(() => import("../../views/fabric/Fabric"))
-    },
-    {
-      text: "图片缩放居中",
-      path: "/step1",
-      component: lazy(() => import("../../views/step1/Step1"))
-    },
-    {
-      text: "拖拽框选平移",
-      path: "/step2",
-      component: lazy(() => import("../../views/step2/Step2"))
-    },
-    {
-      text: "高清裁切",
-      path: "/step3",
-      component: lazy(() => import("../../views/step3/Step3"))
-    },
-  ], [])
+function App() {
+  const menuList = useMemo(
+    () => [
+      // {
+      //   text: "about",
+      //   path: "/about",
+      //   component: lazy(() => import("../../views/about/About"))
+      // },
+      {
+        text: "基本功能",
+        path: "/base",
+        component: lazy(() => import("../../views/base/Base")),
+      },
+      {
+        text: "裁剪详情",
+        path: "/clip",
+        component: lazy(() => import("../../views/clip/Clip")),
+      },
+      {
+        text: "product",
+        path: "/product",
+        component: lazy(() => import("../../views/product/Product")),
+      },
+      {
+        text: "fabric",
+        path: "/fabric",
+        component: lazy(() => import("../../views/fabric/Fabric")),
+      },
+      {
+        text: "图片缩放居中",
+        path: "/step1",
+        component: lazy(() => import("../../views/step1/Step1")),
+      },
+      {
+        text: "拖拽框选平移",
+        path: "/step2",
+        component: lazy(() => import("../../views/step2/Step2")),
+      },
+      {
+        text: "高清裁切",
+        path: "/step3",
+        component: lazy(() => import("../../views/step3/Step3")),
+      },
+    ],
+    []
+  );
 
   return (
     <Router>
@@ -96,20 +104,16 @@ function App () {
             }
           >
             <Switch>
-              {menuList.map((m) => <Route
-                path={m.path}
-                key={m.path}
-                component={m.component}
-              />)}
+              {menuList.map((m) => (
+                <Route path={m.path} key={m.path} component={m.component} />
+              ))}
               <Route path="/">
                 <Redirect to={menuList[0].path} />
               </Route>
             </Switch>
           </Suspense>
         </Box>
-        <Bottom>
-          Ant Design ©2018 Created by Ant UED
-        </Bottom>
+        <Bottom>Ant Design ©2018 Created by Ant UED</Bottom>
       </Page>
     </Router>
   );

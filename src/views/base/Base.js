@@ -307,8 +307,13 @@ function Base() {
         // let start = null;
         const updateClip = () => {
           const { left, top, zoomX, zoomY } = active;
-
-          console.log(active, "active---");
+          clip.set({
+            left,
+            top,
+            zoomX,
+            zoomY,
+          });
+          fabricObj.renderAll();
         };
         fabricObj.on({
           "object:scaling": (...args) => {
@@ -316,52 +321,7 @@ function Base() {
           },
           "object:moving": () => {
             updateClip();
-          },
-          // // 鼠标按下，
-          // "mouse:down": ({ e, target }) => {
-          //   if (!target) {
-          //     const { x, y } = fabricObj.getPointer(e);
-          //     start = { x, y };
-          //   }
-          // },
-          // 'mouse:move': ({ e }) => {
-          //   if (start) {
-          //     const { x, y } = fabricObj.getPointer(e.e)
-          //     const { x: sX, y: sY } = start
-          //     const width = Math.abs(x - sX)
-          //     const height = Math.abs(y - sY)
-          //     if (!showId && width > createLimit && height > createLimit) {
-          //       showId = Date.now()
-          //       const rect = getRect({
-          //         width,
-          //         height,
-          //         left: Math.min(x, sX),
-          //         top: Math.min(y, sY),
-          //       })
-          //       rect.set({ showId })
-          //       fabricObj.add(rect)
-          //     }
-          //     const obj = fabricObj
-          //       .getObjects()
-          //       .find((item) => item.showId === showId)
-          //     if (obj) {
-          //       obj.set({
-          //         width,
-          //         height,
-          //         left: Math.min(x, sX),
-          //         top: Math.min(y, sY),
-          //       })
-          //       fabricObj.renderAll()
-          //     }
-          //   }
-          // },
-          // 'mouse:up': ({ e }) => {
-          //   start = null
-          //   showId = ''
-          //   // if (tempRect) {
-          //   //   tempRect = null
-          //   // }
-          // },
+          }
         });
       };
       draw0();
