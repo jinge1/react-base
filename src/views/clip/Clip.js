@@ -71,6 +71,7 @@ function ClipItem() {
   const canvasEle = useRef(null);
   const fabricList = useRef([]);
   const ratioStep = 0.05;
+  const activeRef = useRef(null);
   const clipRef = useRef(null);
   const fabricRef = useRef(null);
   //   const createLimit = 10;
@@ -109,20 +110,18 @@ function ClipItem() {
 
   // 缩放设置
   const changeSize = useCallback((index, type = 1) => {
-    const { current } = fabricList;
-    const obj = current[index];
-    const width = obj.getWidth();
-    const height = obj.getHeight();
-    const zoom = obj.getZoom() + type * ratioStep;
+    const { current } = fabricRef;
+    const width = current.getWidth();
+    const height = current.getHeight();
+    const zoom = current.getZoom() + type * ratioStep;
     const zoomPoint = new fabric.Point(width / 2, height / 2);
-    obj.zoomToPoint(zoomPoint, zoom);
+    current.zoomToPoint(zoomPoint, zoom);
   }, []);
 
   // 缩放缩放角度
   const changeAngle = useCallback((index, type = 1) => {
-    const { current } = fabricList;
-    const obj = current[index];
-    const eles = obj.getObjects();
+    const { current } = fabricRef;
+    const eles = current.getObjects();
     eles.forEach((ele) => {
       const { angle = 0 } = ele;
       let nextAngle = angle + 90 * type;
@@ -136,7 +135,18 @@ function ClipItem() {
         angle: nextAngle,
       });
     });
-    obj.renderAll();
+    current.renderAll();
+  }, []);
+
+  const updateClip = useCallback(() => {
+    const { left, top, scaleX, scaleY } = activeRef.current;
+    clipRef.current.set({
+      left: left / 2,
+      top: top / 2,
+      scaleX,
+      scaleY,
+    });
+    fabricRef.current.renderAll();
   }, []);
 
   useEffect(() => {
@@ -200,46 +210,37 @@ function ClipItem() {
         fill: "rgba(255, 0, 0, 0.5)",
       });
       rect.clipPath = clip;
-      const group = new fabric.Group([img, rect], {
-        left: width / 2,
-        top: height / 2,
-        originX: "center",
-        originY: "center",
-        // 禁用对象事件
+      img.set({
         evented: false,
-        // 对象是否可选择
-        selectable: false,
-        // 操作旋转控制点时候，旋转中心点是自身中心，还是自身左上角
-        // 该菜蔬动态设置angle无效
-        // centeredRotation: true,
       });
+      rect.set({
+        evented: false,
+      });
+      // const group = new fabric.Group([img, rect], {
+      //   left: width / 2,
+      //   top: height / 2,
+      //   originX: "center",
+      //   originY: "center",
+      //   // 禁用对象事件
+      //   evented: false,
+      //   // 对象是否可选择
+      //   selectable: false,
+      //   // 操作旋转控制点时候，旋转中心点是自身中心，还是自身左上角
+      //   // 该菜蔬动态设置angle无效
+      //   // centeredRotation: true,
+      // });
 
-      
-      fabricRef.current = fabricObj
-      clipRef.current = clip
       // let showId = ''
-      fabricObj.add(img)
-      fabricObj.add(rect)
+      fabricObj.add(img);
+      fabricObj.add(rect);
       // fabricObj.add(group);
       fabricObj.add(active);
-
-      const updateClip = () => {
-        const { left, top, zoomX, zoomY } = active;
-        clip.set({
-          left,
-          top,
-          zoomX,
-          zoomY,
-        });
-        fabricObj.renderAll();
-      };
+      fabricRef.current = fabricObj;
+      activeRef.current = active;
+      clipRef.current = clip;
       fabricObj.on({
-        "object:scaling": (...args) => {
-          updateClip();
-        },
-        "object:moving": () => {
-          updateClip();
-        },
+        "object:scaling": updateClip,
+        "object:moving": updateClip,
       });
     };
 
@@ -294,15 +295,15 @@ function ClipItem() {
     setIsModalVisible(true);
   };
 
-  const changePic = ()=> {
-    clipRef.current.set({
-      left: 200
-    })
-    // fabricRef.current = fabricObj
-    // clipRef.current = active
-    fabricRef.current.renderAll()
-    console.log('9876---')
-  }
+  const changePic = () => {
+    // clipRef.current.set({
+    //   left: 200
+    // })
+    // // fabricRef.current = fabricObj
+    // // clipRef.current = active
+    // fabricRef.current.renderAll()
+    // console.log('9876---')
+  };
   return (
     <Page>
       <Desc>
