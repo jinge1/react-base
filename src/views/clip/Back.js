@@ -1,28 +1,54 @@
+import styled from "@emotion/styled";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { fabric } from "fabric";
-import { Button, Modal, Tooltip } from "antd";
+import { Button, Modal } from "antd";
 import {
   PlusCircleOutlined,
   MinusCircleOutlined,
   UndoOutlined,
   RedoOutlined,
-  DragOutlined,
-  RadiusSettingOutlined
 } from "@ant-design/icons";
 import mei from "@/assets/mei.jpeg";
-import {
-  Page,
-  Title,
-  Desc,
-  List,
-  Item,
-  ItemTop,
-  CanvasBox,
-  CodeBox,
-  IconBox,
-  Controler
-} from './style'
 
+const Page = styled.div`
+  padding: 20px;
+  p {
+    margin: 0 0 10px 0;
+    padding: 0;
+  }
+`;
+const Title = styled.div`
+  font-size: 18px;
+  margin-bottom: 10px;
+  font-weight: bold;
+`;
+const Desc = styled.div``;
+const List = styled.div``;
+const Item = styled.div`
+  box-shadow: 0 0 10px #ccc;
+  margin-bottom: 10px;
+`;
+const ItemTop = styled.div`
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+`;
+const CanvasBox = styled.div`
+  height: ${(props) => props.height}px;
+  overflow: hidden;
+`;
+const CodeBox = styled.div`
+  max-height: 300px;
+  overflow: auto;
+  background: #e1e1e1;
+  code {
+    white-space: break-spaces;
+  }
+`;
+const IconBox = styled.span`
+  font-size: 22px;
+  margin-right: 20px;
+`;
 
 const defaultRectInfo = {
   width: 100,
@@ -32,25 +58,15 @@ const defaultRectInfo = {
   fill: "orange",
 };
 
-/**
- * 
- * @param {*} left : ;
- * @param {*} top 
- * @param {*} info 
- */
-function getAbsolutePosition(left, top, info){
-  const {width, height} = info
-  return {
-    left: left + width/2, 
-    top: top + height/2
-  }
-}
-
-
 function ClipItem() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [resultJson, setResultJson] = useState("");
-  const [clipPosition, setClipPosition] = useState({});
+  const [clipPosition, setClipPosition] = useState({
+    width: 200,
+    height: 100,
+    left: 100,
+    top: 50,
+  });
   const list = useRef(null);
   const canvasEle = useRef(null);
   const fabricList = useRef([]);
@@ -81,9 +97,12 @@ function ClipItem() {
   }, []);
 
   // 生成fabric图片
-  const getImg = useCallback((url) => {
+  const getImg = useCallback((url, info = {}) => {
     return new Promise((resolve, reject) => {
       fabric.Image.fromURL(url, (img) => {
+        if (Object.keys(info).length > 0) {
+          img.set(info);
+        }
         resolve(img);
       });
     });
@@ -133,21 +152,15 @@ function ClipItem() {
   useEffect(() => {
     const ele = canvasEle.current;
     const box = ele.parentNode;
-
-    // 初始化画布
     const fabricObj = new fabric.Canvas(ele, {
       height: box.offsetHeight,
-      centeredRotation: true,
+      // centeredRotation: true,
     });
-
-    fabricRef.current = fabricObj;
-
-    const initClip = {
-      width: 200,
-      height: 100,
-      left: 100,
-      top: 50,
-    }
+    // 页面大小改变的时候，重置canvas宽度
+    const resize = () => {
+      const boxWidth = box.offsetWidth;
+      fabricObj.setWidth(boxWidth);
+    };
 
     /**
      * 获取裁剪位置信息
@@ -177,89 +190,32 @@ function ClipItem() {
     const initDraw = async () => {
       const img = await getImg(mei);
       const { width, height } = img;
-      // 插入图片
-      img.set({
-        ...getAbsolutePosition(0, 0, {width, height}),
-        evented: false,
-        originX: "center",
-        originY: "center",
-      });
-      fabricObj.add(img);
-
-      // 遮罩图层
-      const background = new fabric.Rect({
+      const rect = getRect({
         width,
         height,
-        ...getAbsolutePosition(0, 0, {width, height}),
-        originX: "center",
-        originY: "center",
-        evented: false,
         fill: "rgba(0,0,0,0.5)",
-      })
-
-      // 遮罩框
-      const {width: clipWidth, height: clipHeight, left: clipLeft, top: clipTop} = initClip
-      const clip = new fabric.Rect({
-        width: clipWidth,
-        height: clipHeight,
-        left: clipLeft,
-        top: clipTop,
+      });
+      const clip = getRect({
+        ...getClipPosition(1, clipPosition, { width, height }),
         // 裁剪颠倒
         inverted: true,
         // clipPath从对象的中心开始定位，对象originX和originY不起任何作用
         // absolutePositioned不是相对于对象的中心，而是仅仅定位在画布上
         absolutePositioned: true,
-      })
-
-      // 遮罩绑定蒙版
-      background.clipPath = clip
-      // 加入遮罩层
-      fabricObj.add(background);
-
-      // 活动元素（不能直接操作遮罩层，通过该互动元素间接操作）
-      const active = new fabric.Rect({
-        width: clipWidth,
-        height: clipHeight,
-        left: clipLeft,
-        top: clipTop,
+      });
+      const active = getRect({
+        ...getClipPosition(2, clipPosition, { width, height }),
+        originX: "center",
+        originY: "center",
         fill: "rgba(255, 0, 0, 0.5)",
-      })
-      fabricObj.add(active);
-
-
-      // const clip = getRect({
-      //   ...getClipPosition(1, clipPosition, { width, height }),
-      //   // 裁剪颠倒
-      //   inverted: true,
-      //   // clipPath从对象的中心开始定位，对象originX和originY不起任何作用
-      //   // absolutePositioned不是相对于对象的中心，而是仅仅定位在画布上
-      //   absolutePositioned: true,
-      // });
-      
-
-      // const clip = getRect({
-      //   ...getClipPosition(1, clipPosition, { width, height }),
-      //   // 裁剪颠倒
-      //   inverted: true,
-      //   // clipPath从对象的中心开始定位，对象originX和originY不起任何作用
-      //   // absolutePositioned不是相对于对象的中心，而是仅仅定位在画布上
-      //   absolutePositioned: true,
-      // });
-      // const active = getRect({
-      //   ...getClipPosition(2, clipPosition, { width, height }),
-      //   originX: "center",
-      //   originY: "center",
-      //   fill: "rgba(255, 0, 0, 0.5)",
-      // });
-      // rect.clipPath = clip;
-      // img.set({
-      //   evented: false,
-      //   originX: "center",
-      //   originY: "center",
-      // });
-      // rect.set({
-      //   evented: false,
-      // });
+      });
+      rect.clipPath = clip;
+      img.set({
+        evented: false,
+      });
+      rect.set({
+        evented: false,
+      });
       // const group = new fabric.Group([img, rect], {
       //   left: width / 2,
       //   top: height / 2,
@@ -274,24 +230,18 @@ function ClipItem() {
       //   // centeredRotation: true,
       // });
 
-      // // let showId = ''
-      // fabricObj.add(img);
-      // fabricObj.add(rect);
-      // // fabricObj.add(group);
-      // fabricObj.add(active);
-      // fabricRef.current = fabricObj;
-      // activeRef.current = active;
-      // clipRef.current = clip;
-      // fabricObj.on({
-      //   "object:scaling": updateClip,
-      //   "object:moving": updateClip,
-      // });
-    };
-
-    // 页面大小改变的时候，重置canvas宽度
-    const resize = () => {
-      const boxWidth = box.offsetWidth;
-      fabricObj.setWidth(boxWidth);
+      // let showId = ''
+      fabricObj.add(img);
+      fabricObj.add(rect);
+      // fabricObj.add(group);
+      fabricObj.add(active);
+      fabricRef.current = fabricObj;
+      activeRef.current = active;
+      clipRef.current = clip;
+      fabricObj.on({
+        "object:scaling": updateClip,
+        "object:moving": updateClip,
+      });
     };
 
     // 初始化生成fabric对象列表，高度统一为父级节点高度，宽度随页面宽度自适应
@@ -299,16 +249,13 @@ function ClipItem() {
       initDraw();
       resize();
     };
-
-    // 初始化页面
     init();
-
     window.addEventListener("resize", resize);
     return () => {
       // 组件卸载前移除事件
       window.removeEventListener("resize", resize);
     };
-  }, [getRect, getImg, setCanvasZoom, clipPosition, updateClip]);
+  }, [getRect, getImg, setCanvasZoom, clipPosition]);
 
   // 获取canvas对象位置信息
   const getInfo = (index) => {
@@ -372,18 +319,7 @@ function ClipItem() {
         <Item>
           <ItemTop>
             <p onClick={changePic}>裁剪图片：</p>
-            <Controler>
-              <IconBox>
-                <Tooltip placement="top" title="移动背景图片">
-                  <DragOutlined />
-                </Tooltip>
-              </IconBox>
-              <IconBox>
-                <Tooltip placement="top" title="重新框选或操作框选区">
-                  <RadiusSettingOutlined />
-                </Tooltip>
-              </IconBox>
-              
+            <p>
               <IconBox>
                 <PlusCircleOutlined onClick={() => changeSize(2, 1)} />
               </IconBox>
@@ -399,9 +335,9 @@ function ClipItem() {
               <Button type="primary" onClick={() => getInfo(2)}>
                 裁剪后
               </Button>
-            </Controler>
+            </p>
           </ItemTop>
-          <CanvasBox height={330}>
+          <CanvasBox height={300}>
             <canvas ref={canvasEle}></canvas>
           </CanvasBox>
         </Item>
