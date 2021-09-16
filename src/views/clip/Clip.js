@@ -23,6 +23,7 @@ import {
   Controler
 } from './style'
 
+const BoxImgSrc = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAAA3NCSVQICAjb4U/gAAAABlBMVEXMzMz////TjRV2AAAACXBIWXMAAArrAAAK6wGCiw1aAAAAHHRFWHRTb2Z0d2FyZQBBZG9iZSBGaXJld29ya3MgQ1M26LyyjAAAABFJREFUCJlj+M/AgBVhF/0PAH6/D/HkDxOGAAAAAElFTkSuQmCC'
 
 const defaultRectInfo = {
   width: 100,
@@ -50,6 +51,7 @@ function getAbsolutePosition(left, top, info){
 function ClipItem() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [resultJson, setResultJson] = useState("");
+  const [actionType, setActionType] = useState(1);
   const [clipPosition, setClipPosition] = useState({});
   const list = useRef(null);
   const canvasEle = useRef(null);
@@ -103,7 +105,11 @@ function ClipItem() {
   const changeAngle = useCallback((index, type = 1) => {
     const { current } = fabricRef;
     const eles = current.getObjects();
+    console.log(eles, 'eles---')
     eles.forEach((ele) => {
+      if(ele === activeRef.current){
+        return false
+      }
       const { angle = 0 } = ele;
       let nextAngle = angle + 90 * type;
       if (nextAngle > 360) {
@@ -130,6 +136,18 @@ function ClipItem() {
     fabricRef.current.renderAll();
   }, []);
 
+  const changeObj = useCallback(()=> {
+    const { left, top, scaleX, scaleY } = activeRef.current;
+    clipRef.current.set({
+      left, 
+      top,
+      scaleX,
+      scaleY
+    });
+    
+    // fabricRef.current.renderAll();
+  }, [])
+
   useEffect(() => {
     const ele = canvasEle.current;
     const box = ele.parentNode;
@@ -142,6 +160,11 @@ function ClipItem() {
 
     fabricRef.current = fabricObj;
 
+    fabricObj.on({
+      "object:scaling": changeObj,
+      "object:moving": changeObj,
+    });
+
     const initClip = {
       width: 200,
       height: 100,
@@ -149,29 +172,6 @@ function ClipItem() {
       top: 50,
     }
 
-    /**
-     * 获取裁剪位置信息
-     * @param {number} type 1 裁剪区 2 拖拽对象
-     * @param {*} clipInfo
-     * @param {*} imgInfo
-     * @returns
-     */
-    const getClipPosition = (type, clipInfo, imgInfo) => {
-      const { width, height } = imgInfo;
-      const { width: cWidth, height: cHeight, left, top } = clipInfo;
-      if (type === 1) {
-        return {
-          ...clipInfo,
-          left: -width / 2 + left,
-          top: -height / 2 + top,
-        };
-      }
-      return {
-        ...clipInfo,
-        left: cWidth / 2 + left,
-        top: cHeight / 2 + top,
-      };
-    };
 
     // 初始化渲染
     const initDraw = async () => {
@@ -181,7 +181,7 @@ function ClipItem() {
       img.set({
         ...getAbsolutePosition(0, 0, {width, height}),
         evented: false,
-        originX: "center",
+        originX: "center",  // 围绕自身中心点旋转
         originY: "center",
       });
       fabricObj.add(img);
@@ -191,7 +191,7 @@ function ClipItem() {
         width,
         height,
         ...getAbsolutePosition(0, 0, {width, height}),
-        originX: "center",
+        originX: "center",  // 围绕自身中心点旋转
         originY: "center",
         evented: false,
         fill: "rgba(0,0,0,0.5)",
@@ -210,7 +210,7 @@ function ClipItem() {
         // absolutePositioned不是相对于对象的中心，而是仅仅定位在画布上
         absolutePositioned: true,
       })
-
+      clipRef.current = clip;
       // 遮罩绑定蒙版
       background.clipPath = clip
       // 加入遮罩层
@@ -222,70 +222,10 @@ function ClipItem() {
         height: clipHeight,
         left: clipLeft,
         top: clipTop,
-        fill: "rgba(255, 0, 0, 0.5)",
+        fill: "rgba(255, 0, 0, 0)",
       })
+      activeRef.current = active;
       fabricObj.add(active);
-
-
-      // const clip = getRect({
-      //   ...getClipPosition(1, clipPosition, { width, height }),
-      //   // 裁剪颠倒
-      //   inverted: true,
-      //   // clipPath从对象的中心开始定位，对象originX和originY不起任何作用
-      //   // absolutePositioned不是相对于对象的中心，而是仅仅定位在画布上
-      //   absolutePositioned: true,
-      // });
-      
-
-      // const clip = getRect({
-      //   ...getClipPosition(1, clipPosition, { width, height }),
-      //   // 裁剪颠倒
-      //   inverted: true,
-      //   // clipPath从对象的中心开始定位，对象originX和originY不起任何作用
-      //   // absolutePositioned不是相对于对象的中心，而是仅仅定位在画布上
-      //   absolutePositioned: true,
-      // });
-      // const active = getRect({
-      //   ...getClipPosition(2, clipPosition, { width, height }),
-      //   originX: "center",
-      //   originY: "center",
-      //   fill: "rgba(255, 0, 0, 0.5)",
-      // });
-      // rect.clipPath = clip;
-      // img.set({
-      //   evented: false,
-      //   originX: "center",
-      //   originY: "center",
-      // });
-      // rect.set({
-      //   evented: false,
-      // });
-      // const group = new fabric.Group([img, rect], {
-      //   left: width / 2,
-      //   top: height / 2,
-      //   originX: "center",
-      //   originY: "center",
-      //   // 禁用对象事件
-      //   evented: false,
-      //   // 对象是否可选择
-      //   selectable: false,
-      //   // 操作旋转控制点时候，旋转中心点是自身中心，还是自身左上角
-      //   // 该菜蔬动态设置angle无效
-      //   // centeredRotation: true,
-      // });
-
-      // // let showId = ''
-      // fabricObj.add(img);
-      // fabricObj.add(rect);
-      // // fabricObj.add(group);
-      // fabricObj.add(active);
-      // fabricRef.current = fabricObj;
-      // activeRef.current = active;
-      // clipRef.current = clip;
-      // fabricObj.on({
-      //   "object:scaling": updateClip,
-      //   "object:moving": updateClip,
-      // });
     };
 
     // 页面大小改变的时候，重置canvas宽度
@@ -294,8 +234,15 @@ function ClipItem() {
       fabricObj.setWidth(boxWidth);
     };
 
+    const setBackgroundImage = async (url)=> {
+      const img = await getImg(url);
+      const { width, height } = img;
+      fabricObj.setBackgroundImage(img, fabricObj.renderAll.bind(fabricObj), {repeat: 'repeat', width: 300, height: 300, scaleX: 1, scaleY: 1})
+    }
+
     // 初始化生成fabric对象列表，高度统一为父级节点高度，宽度随页面宽度自适应
     const init = () => {
+      setBackgroundImage(BoxImgSrc)
       initDraw();
       resize();
     };
@@ -308,7 +255,7 @@ function ClipItem() {
       // 组件卸载前移除事件
       window.removeEventListener("resize", resize);
     };
-  }, [getRect, getImg, setCanvasZoom, clipPosition, updateClip]);
+  }, [getRect, getImg, setCanvasZoom, clipPosition, updateClip, changeObj]);
 
   // 获取canvas对象位置信息
   const getInfo = (index) => {
@@ -357,6 +304,8 @@ function ClipItem() {
     // fabricRef.current.renderAll()
     // console.log('9876---')
   };
+
+  const getActionStyle = (type)=> actionType === type ? {style: {color: '#1890ff'}} : {}
   return (
     <Page>
       <Desc>
@@ -375,12 +324,12 @@ function ClipItem() {
             <Controler>
               <IconBox>
                 <Tooltip placement="top" title="移动背景图片">
-                  <DragOutlined />
+                  <DragOutlined {...getActionStyle(1)} onClick={()=> setActionType(1)}/>
                 </Tooltip>
               </IconBox>
               <IconBox>
                 <Tooltip placement="top" title="重新框选或操作框选区">
-                  <RadiusSettingOutlined />
+                  <RadiusSettingOutlined {...getActionStyle(2)} onClick={()=> setActionType(2)} />
                 </Tooltip>
               </IconBox>
               
@@ -401,7 +350,7 @@ function ClipItem() {
               </Button>
             </Controler>
           </ItemTop>
-          <CanvasBox height={330}>
+          <CanvasBox height={330} style={{backgroundImage: BoxImgSrc}}>
             <canvas ref={canvasEle}></canvas>
           </CanvasBox>
         </Item>
