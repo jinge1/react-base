@@ -1,0 +1,51 @@
+{
+    "name": "采购需求表",
+    "defaultList": [
+        {
+            "configJson": {
+                "arr": [],
+                "value": "${concat(\"TY-\",\"${text('${now()}','yyyyddMMhhmmssSSS')}\")}"
+            },
+            "defaultValue": "${concat(\"TY-\",\"${text('${now()}','yyyyddMMhhmmssSSS')}\")}",
+            "attrKey": "input_sq6fmatnqb",
+            "pageKey": "form_g5i9e2nhc6",
+            "defaultType": 1
+        },
+        {
+            "configJson": {
+                "arr": [
+                    "${now()}"
+                ],
+                "value": "${now()}"
+            },
+            "defaultValue": "${now()}",
+            "attrKey": "datePicker_p73zf7z7bmj",
+            "pageKey": "form_g5i9e2nhc6",
+            "defaultType": 1
+        },
+        {
+            "defaultValue": "HOhaoo",
+            "attrKey": "input_k968ojrx9kk",
+            "pageKey": "form_g5i9e2nhc6",
+            "defaultType": 0
+        },
+        {
+            "defaultValue": "HO522222",
+            "attrKey": "input_6u1rxprljfx",
+            "pageKey": "form_g5i9e2nhc6",
+            "defaultType": 0
+        },
+        {
+            "defaultValue": "HO522222",
+            "attrKey": "input_827roucwyjd",
+            "pageKey": "form_g5i9e2nhc6",
+            "defaultType": 0
+        },
+        {
+            "defaultValue": "CG777",
+            "attrKey": "input_i1vjpclh35",
+            "pageKey": "form_g5i9e2nhc6",
+            "defaultType": 0
+        }
+    ]
+}

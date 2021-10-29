@@ -1,0 +1,57 @@
+{
+    "name": "校验测试",
+    "defaultList": [
+        {
+            "configJson": {
+                "arr": [
+                    "${loginUser()}"
+                ],
+                "value": "${loginUser()}"
+            },
+            "defaultValue": "${loginUser()}",
+            "attrKey": "select_ov5zq74rog",
+            "pageKey": "form_sj5fp4sweg",
+            "defaultType": 1
+        },
+        {
+            "configJson": {
+                "arr": [],
+                "value": "${select(\"设备管理对象.设备管理对象ID\",\"设备管理对象.属性状态 = '2'\",\"设备管理对象.自增设备表id\",\"+\",\"1\")}"
+            },
+            "defaultValue": "${select(\"设备管理对象.设备管理对象ID\",\"设备管理对象.属性状态 = '2'\",\"设备管理对象.自增设备表id\",\"asc\",\"1\")}",
+            "attrKey": "input_d42qs7sjfv",
+            "pageKey": "form_sj5fp4sweg",
+            "defaultType": 1
+        },
+        {
+            "defaultValue": "2021-06-22T00:00:00.000Z",
+            "attrKey": "datePicker_2znf5wi7g4",
+            "pageKey": "form_sj5fp4sweg",
+            "defaultType": 0
+        },
+        {
+            "defaultValue": "1",
+            "attrKey": "input_hh0zyvraxh",
+            "pageKey": "form_sj5fp4sweg",
+            "defaultType": 0
+        },
+        {
+            "defaultValue": "2021-06-22T00:00:00.000Z",
+            "attrKey": "datePicker_exp22qrocd",
+            "pageKey": "form_sj5fp4sweg",
+            "defaultType": 0
+        },
+        {
+            "configJson": {
+                "arr": [
+                    "${loginUser()}"
+                ],
+                "value": "${loginUser()}"
+            },
+            "defaultValue": "${loginUser()}",
+            "attrKey": "input_strwp4czgq",
+            "pageKey": "form_sj5fp4sweg",
+            "defaultType": 1
+        }
+    ]
+}

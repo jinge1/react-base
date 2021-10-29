@@ -1,0 +1,45 @@
+{
+    "name": "刀具归还",
+    "defaultList": [
+        {
+            "configJson": {
+                "arr": [],
+                "value": "${concat(\"TY-\",\"${text('${now()}','yyyyddMMhhmmssSSS')}\")}"
+            },
+            "defaultValue": "${concat(\"TY-\",\"${text('${now()}','yyyyddMMhhmmssSSS')}\")}",
+            "attrKey": "input_esr1bl98lp",
+            "pageKey": "form_uo94siogs9",
+            "defaultType": 1
+        },
+        {
+            "configJson": {
+                "arr": [
+                    "${loginUser()}"
+                ],
+                "value": "${loginUser()}"
+            },
+            "defaultValue": "${loginUser()}",
+            "attrKey": "multiple_jt6r5wyzx2",
+            "pageKey": "form_uo94siogs9",
+            "defaultType": 1
+        },
+        {
+            "configJson": {
+                "arr": [
+                    "${now()}"
+                ],
+                "value": "${now()}"
+            },
+            "defaultValue": "${now()}",
+            "attrKey": "datePicker_e00zbgvfva",
+            "pageKey": "form_uo94siogs9",
+            "defaultType": 1
+        },
+        {
+            "defaultValue": "565656",
+            "attrKey": "input_48j6f4tfm2i",
+            "pageKey": "form_uo94siogs9",
+            "defaultType": 0
+        }
+    ]
+}

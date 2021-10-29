@@ -1,0 +1,169 @@
+{
+    "name": "刀具领用",
+    "defaultList": [
+        {
+            "configJson": {
+                "arr": [
+                    "${text()}",
+                    "${now()}"
+                ],
+                "value": "${now()}"
+            },
+            "defaultValue": "${now()}",
+            "attrKey": "datePicker_6urolw0u02",
+            "pageKey": "form_nl1th6pcyv",
+            "defaultType": 1
+        },
+        {
+            "configJson": {
+                "arr": [],
+                "value": "${concat(\"TY-\",\"${text('${now()}','yyyyddMMhhmmssSSS')}\")}"
+            },
+            "defaultValue": "${concat(\"TY-\",\"${text('${now()}','yyyyddMMhhmmssSSS')}\")}",
+            "attrKey": "input_8ndosiogj5",
+            "pageKey": "form_nl1th6pcyv",
+            "defaultType": 1
+        },
+        {
+            "configJson": {
+                "arr": [
+                    "${select()}",
+                    {
+                        "parameter": "刀具管理.存货代码",
+                        "key": "ds_xkljtxkljt_115.daima"
+                    },
+                    {
+                        "parameter": "刀具管理.物料类型",
+                        "key": "ds_xkljtxkljt_115.leixing"
+                    },
+                    {
+                        "parameter": "物料类型",
+                        "key": "select_xhq569a33f"
+                    },
+                    {
+                        "parameter": "刀具管理.存货代码",
+                        "key": "ds_xkljtxkljt_115.daima"
+                    },
+                    {
+                        "parameter": "刀具管理.存货编码",
+                        "key": "ds_xkljtxkljt_115.bianma"
+                    },
+                    {
+                        "parameter": "存货编码",
+                        "key": "select_nx3hsge9pwp"
+                    },
+                    {
+                        "parameter": "存货编码1",
+                        "key": "select_eel3nu1iedu"
+                    },
+                    {
+                        "parameter": "存货编码",
+                        "key": "select_nx3hsge9pwp"
+                    },
+                    "${select()}",
+                    {
+                        "parameter": "刀具管理.存货代码",
+                        "type": "obj",
+                        "key": "ds_xkljtxkljt_115.daima"
+                    },
+                    {
+                        "parameter": "刀具管理.存货编码",
+                        "type": "obj",
+                        "key": "ds_xkljtxkljt_115.bianma"
+                    },
+                    {
+                        "parameter": "存货编码",
+                        "type": "Com",
+                        "key": "select_nx3hsge9pwp"
+                    },
+                    {
+                        "parameter": "刀具管理.存货代码",
+                        "type": "obj",
+                        "key": "ds_xkljtxkljt_115.daima"
+                    }
+                ],
+                "value": "${select(\"刀具管理.存货代码\",\"刀具管理.存货编码='${存货编码}'\",\"刀具管理.存货代码\",\"asc\",\"1\")}"
+            },
+            "defaultValue": "${select(\"ds_xkljtxkljt_115.daima\",\"ds_xkljtxkljt_115.bianma='${select_nx3hsge9pwp}'\",\"ds_xkljtxkljt_115.daima\",\"asc\",\"1\")}",
+            "attrKey": "input_o7uxzt5l46",
+            "pageKey": "form_nl1th6pcyv",
+            "defaultType": 1
+        },
+        {
+            "configJson": {
+                "arr": [
+                    "${select()}",
+                    {
+                        "parameter": "刀具管理.物料名称",
+                        "key": "ds_xkljtxkljt_115.mingcheng"
+                    },
+                    {
+                        "parameter": "刀具管理.物料类型",
+                        "key": "ds_xkljtxkljt_115.leixing"
+                    },
+                    {
+                        "parameter": "物料类型",
+                        "key": "select_xhq569a33f"
+                    },
+                    {
+                        "parameter": "刀具管理.物料名称",
+                        "key": "ds_xkljtxkljt_115.mingcheng"
+                    },
+                    {
+                        "parameter": "刀具管理.存货编码",
+                        "key": "ds_xkljtxkljt_115.bianma"
+                    },
+                    {
+                        "parameter": "存货编码1",
+                        "key": "select_eel3nu1iedu"
+                    },
+                    {
+                        "parameter": "存货编码",
+                        "key": "select_nx3hsge9pwp"
+                    }
+                ],
+                "value": "${select(\"刀具管理.物料名称\",\"刀具管理.存货编码='${存货编码}'\",\"刀具管理.物料名称\",\"+\",\"1\")}"
+            },
+            "defaultValue": "${select(\"ds_xkljtxkljt_115.mingcheng\",\"ds_xkljtxkljt_115.bianma='${select_nx3hsge9pwp}'\",\"ds_xkljtxkljt_115.mingcheng\",\"asc\",\"1\")}",
+            "attrKey": "input_geyhbumy5p",
+            "pageKey": "form_nl1th6pcyv",
+            "defaultType": 1
+        },
+        {
+            "configJson": {
+                "arr": [
+                    "${select()}",
+                    {
+                        "parameter": "刀具管理.存货编码",
+                        "key": "ds_xkljtxkljt_115.bianma"
+                    },
+                    {
+                        "parameter": "刀具管理.规格型号",
+                        "key": "ds_xkljtxkljt_115.xinghao"
+                    },
+                    {
+                        "parameter": "刀具管理.存货编码",
+                        "key": "ds_xkljtxkljt_115.bianma"
+                    },
+                    {
+                        "parameter": "刀具管理.存货编码",
+                        "key": "ds_xkljtxkljt_115.bianma"
+                    },
+                    {
+                        "parameter": "存货编码",
+                        "key": "select_nx3hsge9pwp"
+                    },
+                    {
+                        "parameter": "刀具管理.规格型号",
+                        "key": "ds_xkljtxkljt_115.xinghao"
+                    }
+                ],
+                "value": "${select(\"刀具管理.规格型号\",\"刀具管理.存货编码='${存货编码}'\",\"刀具管理.规格型号\",\"+\",\"1\")}"
+            },
+            "defaultValue": "${select(\"ds_xkljtxkljt_115.xinghao\",\"ds_xkljtxkljt_115.bianma='${select_nx3hsge9pwp}'\",\"ds_xkljtxkljt_115.xinghao\",\"asc\",\"1\")}",
+            "attrKey": "input_b9bsv7ycn88",
+            "pageKey": "form_nl1th6pcyv",
+            "defaultType": 1
+        }
+    ]
+}
