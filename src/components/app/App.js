@@ -77,6 +77,11 @@ function App() {
         path: "/step3",
         component: lazy(() => import("../../views/step3/Step3")),
       },
+      {
+        text: "组件封装",
+        path: "/step4",
+        component: lazy(() => import("../../views/step4/Step4")),
+      },
     ],
     []
   );
