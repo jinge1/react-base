@@ -82,6 +82,11 @@ function App() {
         path: "/step4",
         component: lazy(() => import("../../views/step4/Step4")),
       },
+      {
+        text: "dnd",
+        path: "/dnd",
+        component: lazy(() => import("../../views/dnd/Dnd")),
+      },
     ],
     []
   );
@@ -113,7 +118,7 @@ function App() {
                 <Route path={m.path} key={m.path} component={m.component} />
               ))}
               <Route path="/">
-                <Redirect to={menuList[0].path} />
+                <Redirect to={menuList[menuList.length - 1].path} />
               </Route>
             </Switch>
           </Suspense>
