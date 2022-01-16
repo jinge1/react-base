@@ -5466,8 +5466,8 @@ forwarded@~0.1.2:
 
 fr-generator@^2.6.1:
   version "2.6.1"
-  resolved "https://registry.yarnpkg.com/fr-generator/-/fr-generator-2.6.1.tgz#c0abcff8fd232fda244953541329a86a11099048"
-  integrity sha512-UJLPhHoauEA0/qmtKup/2S+bIAU5mdUrhtmUyjnLOyzmQKndKX6S8RRJKBk6NColHxxl8GaQprwYszdoSqD5tA==
+  resolved "https://registry.npmmirror.com/fr-generator/download/fr-generator-2.6.1.tgz#c0abcff8fd232fda244953541329a86a11099048"
+  integrity sha1-wKvP+P0jL9okSVNUEymoahEJkEg=
   dependencies:
     antd "^4.4.2"
     clone "^2.1.2"
