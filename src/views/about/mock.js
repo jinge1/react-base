@@ -4,6 +4,7 @@ export const data = {
       id: '1',
       name: 'node1',
       label: 'node1',
+      type: 'circle',
       anchorPoints: [
         [0, 0.5],
         [1, 0.5]
@@ -37,7 +38,6 @@ export const data = {
       target: '2',
       label: 'edge-1',
       type: 'hvh',
-      
     },
     {
       source: '1',

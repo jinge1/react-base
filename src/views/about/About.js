@@ -26,14 +26,33 @@ G6.registerEdge('hvh', {
         // ],
         path: [
           ['M', startPoint.x, startPoint.y],
-          ['L', startPoint.x, startPoint.y + startPoint.y / 3], // 三分之一处
-          ['L', endPoint.x, startPoint.y + startPoint.y / 3], // 三分之二处
-          ['L', endPoint.x, endPoint.y]
-        ]
+          // ['L', startPoint.x, startPoint.y + startPoint.y / 3], // 三分之一处
+          ['L', endPoint.x, startPoint.y], // 三分之二处
+          ['L', endPoint.x, endPoint.y],
+        ],
       },
+
       // must be assigned in G6 3.3 and later versions. it can be any value you want
-      name: 'path-shape'
+      name: 'path-shape',
     })
+    if (cfg.label) {
+      group.addShape('text', {
+        // attrs: style
+        attrs: {
+          x: 0, // 居中
+          y: 0,
+          textAlign: 'center',
+          textBaseline: 'middle',
+          text: cfg.label,
+          fill: '#666',
+        },
+        // must be assigned in G6 3.3 and later versions. it can be any value you want
+        name: 'text-shape',
+        // 设置 draggable 以允许响应鼠标的图拽事件
+        draggable: true,
+      })
+    }
+
     return shape
   },
   afterDraw(cfg, group) {
@@ -49,10 +68,10 @@ G6.registerEdge('hvh', {
         fill: '#f00',
         // x 和 y 分别减去 width / 2 与 height / 2，使矩形中心在 midPoint 上
         x: midPoint.x - 5,
-        y: midPoint.y - 5
-      }
+        y: midPoint.y - 5,
+      },
     })
-  }
+  },
 })
 
 // G6.registerEdge('flow-line', {
@@ -87,7 +106,7 @@ function About() {
     const container = boxRef.current
     // const width = container.scrollWidth
     // const height = container.scrollHeight || 500
-    const width = 1000
+    const width = 600
     const height = 500
     const graph = new G6.Graph({
       container: container,
@@ -103,14 +122,23 @@ function About() {
         // },
         ranksep: 70,
         rankdir: 'UL',
-        controlPoints: true
+        controlPoints: true,
       },
       defaultNode: {
         type: 'modelRect',
         // type: 'rect',
         size: [200, 100],
         description: '789',
-        anchorPoints: [[0.5, 1]]
+        anchorPoints: [[0.5, 1]],
+        // logoIcon: {
+        //   show: false,
+        // },
+        preRect: {
+          show: false,
+        },
+        stateIcon: {
+          show: false,
+        },
       },
       defaultEdge: {
         type: 'polyline',
@@ -120,14 +148,14 @@ function About() {
           offset: 45,
           endArrow: true,
           lineWidth: 2,
-          stroke: '#C2C8D5'
-        }
+          stroke: '#C2C8D5',
+        },
       },
       nodeStateStyles: {
         selected: {
           stroke: '#d9d9d9',
-          fill: '#5394ef'
-        }
+          fill: '#5394ef',
+        },
       },
       modes: {
         default: [
@@ -145,16 +173,36 @@ function About() {
               // return text.join('\n')
               return typeof cfg === 'object' ? cfg.a : ''
             },
-            offset: 30
-          }
-        ]
+            offset: 30,
+          },
+        ],
       },
-      fitView: true
+      fitCenter: true,
+      // fitView: true
     })
     graph.data(data)
     graph.render()
+    const item = graph.findById('3')
+    console.log(item, 'item---')
+    // graph.updateItem(item, {id: 3, x: 0, y: 0})
+    // graph.refreshPositions()
     graph.on('edge:click', (ev) => {
-      console.log(ev, 'ev---', ev.target)
+      const { item, target } = ev
+      if (target?.attrs?.fill === '#f00') {
+        console.log(item, 'ev---', target.attrs)
+        const actionItem = graph.findById('3')
+        graph.updateItem(actionItem, { id: '3', x: 500, y: 430 })
+        // graph.addItem('node', {
+        //   id: 'node',
+        //   label: 'node',
+        //   address: 'cq',
+        //   x: 200,
+        //   y: 150,
+        //   style: {
+        //     fill: 'blue',
+        //   },
+        // })
+      }
     })
   }, [])
   return <Box ref={boxRef}>About2</Box>
