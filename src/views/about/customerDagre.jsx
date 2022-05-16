@@ -2,9 +2,8 @@ import { useEffect, useRef } from 'react'
 import styled from '@emotion/styled'
 import G6 from '@antv/g6'
 import { data } from './mock'
-// import { DagreLayout } from '@antv/layout'
+import { DagreLayout } from '@antv/layout'
 import '../../utils/register'
-import DagreLayout from '../../utils/layout'
 
 const dagreLayout = new DagreLayout({
   type: 'customer-dagre',
@@ -27,24 +26,6 @@ function About() {
       container: container,
       width,
       height,
-      // layout: {
-      //   type: 'dagre',
-      //   // nodesepFunc: (d) => {
-      //   //   if (d.id === '3') {
-      //   //     return 500
-      //   //   }
-      //   //   return 50
-      //   // },
-      //   // begin: true,
-      //   // sortByCombo: true,
-      //   // radial: true,
-      //   ranksep: 70,
-      //   rankdir: 'UL',
-      //   controlPoints: true,
-      //   onLayoutEnd: function(...args){
-      //     console.log(args, 'ttt---')
-      //   }
-      // },
       defaultNode: {
         type: 'modelRect',
         // type: 'rect',
@@ -109,10 +90,9 @@ function About() {
     // console.log(newModel)
 
     graph.data({
-      nodes,
-      // nodes: nodes.map((node) =>
-      //   node.id === '3' ? { ...node, y: 200 } : node
-      // ),
+      nodes: nodes.map((node) =>
+        node.id === '3' ? { ...node, y: 200 } : node
+      ),
       edges,
     })
     graph.render()

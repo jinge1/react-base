@@ -7,30 +7,31 @@ export const data = {
       type: 'circle',
       anchorPoints: [
         [0, 0.5],
-        [1, 0.5]
+        [1, 0.5],
       ],
-      conf: { a: 1 }
     },
     {
       id: '2',
       name: 'node2',
-      label: 'node3'
+      label: 'node2',
+      // layer: 1,
     },
     {
       id: '3',
       name: 'node3',
-      label: 'node3'
+      label: 'node3',
+      // layer: 1,
     },
     {
       id: '4',
       name: 'node4',
-      label: 'node4'
+      label: 'node4',
     },
     {
       id: '5',
       name: 'node5',
-      label: 'node5'
-    }
+      label: 'node5',
+    },
   ],
   edges: [
     {
@@ -43,22 +44,22 @@ export const data = {
       source: '1',
       target: '3',
       label: 'edge-1',
-      type: 'hvh'
+      type: 'hvh',
     },
     {
       source: '2',
       target: '4',
-      label: 'edge-1'
+      label: 'edge-1',
     },
     {
       source: '4',
       target: '5',
-      label: 'edge-1'
+      label: 'edge-1',
     },
     {
       source: '3',
       target: '5',
-      label: 'edge-1'
-    }
-  ]
+      label: 'edge-1',
+    },
+  ],
 }

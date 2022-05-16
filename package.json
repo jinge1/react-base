@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@antv/g6": "^4.6.4",
+    "@antv/layout": "^0.2.2",
     "@emotion/react": "^11.4.0",
     "@emotion/styled": "^11.3.0",
     "@testing-library/jest-dom": "^5.11.4",
@@ -43,7 +44,10 @@
     ]
   },
   "devDependencies": {
+    "babel-plugin-import": "^1.13.5",
     "customize-cra": "^1.0.0",
+    "less": "^4.1.2",
+    "less-loader": "^10.2.0",
     "react-app-rewired": "^2.1.8"
   }
 }
