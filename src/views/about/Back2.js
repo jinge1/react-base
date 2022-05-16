@@ -3,38 +3,13 @@ import styled from '@emotion/styled'
 import G6 from '@antv/g6'
 import { data } from './mock'
 
-
-// 中间带删除按钮边
-G6.registerEdge(
-  'mid-point-edge',
-  {
-    afterDraw(cfg, group) {
-      // 获取图形组中的第一个图形，在这里就是边的路径图形
-      const shape = group.get('children')[0]
-      // 获取路径图形的中点坐标
-      const midPoint = shape.getPoint(0.5)
-      // 在中点增加一个矩形，注意矩形的原点在其左上角
-      group.addShape('circle', {
-        attrs: {
-          name: 'addButton',
-          r: 11,
-          fill: '#B3B3B3',
-          x: midPoint.x,
-          y: midPoint.y,
-        },
-      })
-      // group.addShape('text', {
-      //   attrs: {
-      //     x: midPoint.x,
-      //     y: midPoint.y,
-      //     ...addIcoConf,
-      //   },
-      // })
-    },
-    update: undefined,
-  },
-  'line',
-)
+// G6.registerEdge(
+//   'mid-point-edge',
+//   {
+//     update: undefined
+//   },
+//   'cubic'
+// )
 
 G6.registerEdge('hvh', {
   draw(cfg, group) {
@@ -187,19 +162,19 @@ function About() {
           'drag-canvas',
           'zoom-canvas',
           'click-select',
-          // {
-          //   type: 'tooltip',
-          //   formatText(model) {
-          //     const cfg = model.conf
-          //     // const text = []
-          //     // cfg.forEach((row) => {
-          //     //   text.push(row.label + ':' + row.value + '<br>')
-          //     // })
-          //     // return text.join('\n')
-          //     return typeof cfg === 'object' ? cfg.a : ''
-          //   },
-          //   offset: 30,
-          // },
+          {
+            type: 'tooltip',
+            formatText(model) {
+              const cfg = model.conf
+              // const text = []
+              // cfg.forEach((row) => {
+              //   text.push(row.label + ':' + row.value + '<br>')
+              // })
+              // return text.join('\n')
+              return typeof cfg === 'object' ? cfg.a : ''
+            },
+            offset: 30,
+          },
         ],
       },
       fitCenter: true,

@@ -6,7 +6,7 @@
 
 ```shell
 npm install react-app-rewired -D
-npm install customize-cr -D
+npm install customize-cra -D
 ```
 
 2. 修改启动方式

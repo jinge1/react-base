@@ -49,6 +49,7 @@ function App() {
           </Menu>
         </Header>
         <Content style={{ padding: "0 50px" }}>
+          <h1>666</h1>
           <Suspense
             fallback={
               <Loading>
