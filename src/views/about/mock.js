@@ -1,74 +1,259 @@
-export const data = {
+export const apiData = {
   nodes: [
     {
-      id: '1',
-      name: 'node1',
-      label: 'node1',
-      type: 'circle',
-      size: 30,
-      x: 10,
-      y: 10 * 20,
-      anchorPoints: [
-        [0, 0.5],
-        [1, 0.5]
-      ]
+      id: 'startEvent_baf4740da7a',
+      label: '开始'
     },
     {
-      id: '2',
-      name: 'node2',
-      label: 'node3',
-      x: 20,
-      y: 20 * 20
+      id: 'conditionRouteNode_8ee4ce7c35a',
+      label: '条件分支网关1'
     },
     {
-      id: '3',
-      name: 'node3',
-      label: 'node3',
-      x: 30,
-      y: 30 * 20
+      id: 'conditionNode_0dcbc3f5fb7',
+      label: '分支节点3'
     },
     {
-      id: '4',
-      name: 'node4',
-      label: 'node4',
-      x: 40,
-      y: 40 * 20
+      id: 'conditionRouteNode_e42f4558a8e',
+      label: '条件分支网关2'
     },
     {
-      id: '5',
-      name: 'node5',
-      label: 'node5',
-      x: 50,
-      y: 50 * 20
+      id: 'conditionNode_5d25424ab30',
+      label: '分支节点2'
+    },
+    {
+      id: 'approvalNode_8218ab809a2',
+      label: '人工节点3'
+    },
+    {
+      id: 'conditionNode_0e2450245ea',
+      label: '默认分支'
+    },
+    {
+      id: 'approvalNode_10dc646296a',
+      label: '人工节点2'
+    },
+    {
+      id: 'virtualNode_621d874fc59',
+      label: '1'
+    },
+    {
+      id: 'approvalNode_31893cbb80a',
+      label: '人工节点1'
+    },
+    {
+      id: 'conditionNode_d5c57c28dcf',
+      label: '默认分支'
+    },
+    {
+      id: 'virtualNode_0199123fd3b',
+      label: '1'
+    },
+    {
+      id: 'endEvent_76e58674c9d',
+      label: '结束'
+    }
+  ].map((node) => ({ ...node, width: 180, height: 36 })),
+  edges: [
+    {
+      source: 'startEvent_baf4740da7a',
+      target: 'conditionRouteNode_8ee4ce7c35a'
+    },
+    {
+      source: 'conditionRouteNode_8ee4ce7c35a',
+      target: 'conditionNode_0dcbc3f5fb7'
+    },
+    {
+      source: 'conditionRouteNode_8ee4ce7c35a',
+      target: 'conditionNode_d5c57c28dcf'
+    },
+    {
+      source: 'conditionNode_0dcbc3f5fb7',
+      target: 'conditionRouteNode_e42f4558a8e'
+    },
+    {
+      source: 'conditionRouteNode_e42f4558a8e',
+      target: 'conditionNode_5d25424ab30'
+    },
+    {
+      source: 'conditionRouteNode_e42f4558a8e',
+      target: 'conditionNode_0e2450245ea'
+    },
+    {
+      source: 'conditionNode_5d25424ab30',
+      target: 'approvalNode_8218ab809a2'
+    },
+    {
+      source: 'approvalNode_8218ab809a2',
+      target: 'virtualNode_621d874fc59'
+    },
+    {
+      source: 'conditionNode_0e2450245ea',
+      target: 'approvalNode_10dc646296a'
+    },
+    {
+      source: 'approvalNode_10dc646296a',
+      target: 'virtualNode_621d874fc59'
+    },
+    {
+      source: 'virtualNode_621d874fc59',
+      target: 'approvalNode_31893cbb80a'
+    },
+    {
+      source: 'approvalNode_31893cbb80a',
+      target: 'virtualNode_0199123fd3b'
+    },
+    {
+      source: 'conditionNode_d5c57c28dcf',
+      target: 'virtualNode_0199123fd3b'
+    },
+    {
+      source: 'virtualNode_0199123fd3b',
+      target: 'endEvent_76e58674c9d'
+    }
+  ]
+}
+
+export const data2 = {
+  nodes: [
+    {
+      renderKey: 'NODE',
+      id: 'startEvent_baf4740da7a',
+      label: '开始'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'conditionRouteNode_8ee4ce7c35a',
+      label: '条件分支网关1'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'conditionNode_0dcbc3f5fb7',
+      label: '分支节点3'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'conditionRouteNode_e42f4558a8e',
+      label: '条件分支网关2'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'conditionNode_5d25424ab30',
+      label: '分支节点2'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'approvalNode_8218ab809a2',
+      label: '人工节点3'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'conditionNode_0e2450245ea',
+      label: '默认分支'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'approvalNode_10dc646296a',
+      label: '人工节点2'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'virtualNode_441706b294b',
+      label: '1'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'approvalNode_31893cbb80a',
+      label: '人工节点1'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'conditionNode_d5c57c28dcf',
+      label: '默认分支'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'virtualNode_75084145629',
+      label: '1'
+    },
+    {
+      renderKey: 'NODE',
+      id: 'endEvent_76e58674c9d',
+      label: '结束'
     }
   ],
   edges: [
     {
-      source: '1',
-      target: '2',
-      // label: 'edge-11',
-      type: 'mid-point-edge'
+      renderKey: 'EDGE',
+      source: 'startEvent_baf4740da7a',
+      target: 'conditionRouteNode_8ee4ce7c35a'
     },
     {
-      source: '1',
-      target: '3',
-      // label: 'edge-2',
-      type: 'mid-point-edge'
+      renderKey: 'EDGE',
+      source: 'conditionRouteNode_8ee4ce7c35a',
+      target: 'conditionNode_0dcbc3f5fb7'
     },
     {
-      source: '2',
-      target: '4'
-      // label: 'edge-1'
+      renderKey: 'EDGE',
+      source: 'conditionRouteNode_8ee4ce7c35a',
+      target: 'conditionNode_d5c57c28dcf'
     },
     {
-      source: '4',
-      target: '5'
-      // label: 'edge-3'
+      renderKey: 'EDGE',
+      source: 'conditionNode_0dcbc3f5fb7',
+      target: 'conditionRouteNode_e42f4558a8e'
     },
     {
-      source: '3',
-      target: '5'
-      // label: 'edge-4'
+      renderKey: 'EDGE',
+      source: 'conditionRouteNode_e42f4558a8e',
+      target: 'conditionNode_5d25424ab30'
+    },
+    {
+      renderKey: 'EDGE',
+      source: 'conditionRouteNode_e42f4558a8e',
+      target: 'conditionNode_0e2450245ea'
+    },
+    {
+      renderKey: 'EDGE',
+      source: 'conditionNode_5d25424ab30',
+      target: 'approvalNode_8218ab809a2'
+    }
+  ]
+}
+
+export const data = {
+  nodes: [
+    {
+      id: 'root1',
+      renderKey: 'NODE'
+    },
+    {
+      id: 'down1',
+      renderKey: 'NODE'
+    },
+    {
+      id: 'down2',
+      renderKey: 'NODE'
+    },
+    {
+      id: 'down3',
+      renderKey: 'NODE'
+    }
+  ],
+  edges: [
+    {
+      source: 'root1',
+      target: 'down1',
+      renderKey: 'EDGE'
+    },
+    {
+      source: 'root1',
+      target: 'down2',
+      renderKey: 'EDGE'
+    },
+    {
+      source: 'root1',
+      target: 'down3',
+      label: '1:N(纯文本)'
     }
   ]
 }
