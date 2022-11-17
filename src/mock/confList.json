@@ -1,0 +1,596 @@
+[
+    {
+        "configJson": {
+            "prseID": true,
+            "layoutLine": 1,
+            "bindKey": false
+        },
+        "attrStatus": 1,
+        "attrTitle": "部门",
+        "attrComment": "请选择",
+        "attrSort": 0,
+        "attrNo": "department_52jiex4na68",
+        "checkJson": {},
+        "attrType": "department",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            }
+        ]
+    },
+    {
+        "configJson": {
+            "multipleFlag": true,
+            "personnelID": true,
+            "defaultValue": [],
+            "layoutLine": 1,
+            "departmentMultiple": true,
+            "bindKey": false,
+            "allRoute": true
+        },
+        "attrStatus": 1,
+        "attrTitle": "人员",
+        "attrComment": "请选择",
+        "attrSort": 1,
+        "attrNo": "personnel_3231j5f6ye9",
+        "checkJson": {},
+        "attrType": "personnel",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            }
+        ]
+    },
+    {
+        "attrFormat": "1",
+        "configJson": {
+            "layoutLine": 2
+        },
+        "attrStatus": 1,
+        "attrTitle": "文本输入",
+        "attrComment": "请输入",
+        "attrSort": 2,
+        "attrNo": "input_jclv1ajqyf",
+        "checkJson": {},
+        "attrType": "input",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            },
+            {
+                "title": "最小长度",
+                "id": "minLength"
+            },
+            {
+                "title": "最大长度",
+                "id": "maxLength"
+            }
+        ]
+    },
+    {
+        "configJson": {
+            "searchFlag": true,
+            "layoutLine": 1,
+            "openColor": true,
+            "selectType": 2,
+            "bindKey": false
+        },
+        "attrStatus": 1,
+        "attrTitle": "单选",
+        "attrComment": "请选择",
+        "attrSort": 3,
+        "attrNo": "select_6ysq6c5lx9",
+        "checkJson": {},
+        "attrType": "select",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            }
+        ]
+    },
+    {
+        "attrFormat": "5",
+        "configJson": {
+            "layoutLine": 1,
+            "detailAddress": "",
+            "bindKey": false
+        },
+        "attrStatus": 1,
+        "attrTitle": "地址",
+        "attrComment": "请选择",
+        "attrSort": 4,
+        "attrNo": "area_putl6lj7lsq",
+        "checkJson": {},
+        "attrType": "area",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            }
+        ]
+    },
+    {
+        "configJson": {
+            "unitType": "2",
+            "numberFormat": "3",
+            "unitVal": "$",
+            "precision": 2,
+            "layoutLine": 1,
+            "thousands": true,
+            "bindKey": false,
+            "showCapitalize": false,
+            "showUnit": true
+        },
+        "attrStatus": 1,
+        "attrTitle": "数字输入outer",
+        "attrComment": "请输入",
+        "attrSort": 5,
+        "attrNo": "inputNumber_pg65o3wde3",
+        "checkJson": {},
+        "attrType": "inputNumber",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            },
+            {
+                "title": "最小值",
+                "id": "min"
+            },
+            {
+                "title": "最大值",
+                "id": "max"
+            },
+            {
+                "title": "最小长度",
+                "id": "minLength"
+            },
+            {
+                "title": "最大长度",
+                "id": "maxLength"
+            }
+        ]
+    },
+    {
+        "configJson": {
+            "searchFlag": false,
+            "layoutLine": 1,
+            "openColor": true,
+            "selectType": 2,
+            "selectAllFlag": false,
+            "bindKey": false
+        },
+        "attrStatus": 1,
+        "attrTitle": "复选",
+        "attrComment": "请选择",
+        "attrSort": 6,
+        "attrNo": "multiple_ih9viwd5vct",
+        "checkJson": {},
+        "attrType": "multiple",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            },
+            {
+                "title": "选择选项最大个数",
+                "id": "maxSelectCount"
+            }
+        ]
+    },
+    {
+        "configJson": {
+            "showSnFlag": true,
+            "quotaColumnFlag": true,
+            "confirmCheckFlag": false,
+            "showOptionFlag": true,
+            "pageCount": "10",
+            "defaultValue": "[{\"input_924snz3jatw\":\"http://www.a.c\",\"object_x1o29xz5iu\":[],\"multiple_qdf5qie5r7j\":[\"新选项1\",\"新选项新选项新选项新选项新选项新选项新选项新选项5\"]},{\"input_924snz3jatw\":\"http://www.a.c\",\"object_x1o29xz5iu\":[],\"multiple_qdf5qie5r7j\":[\"新选项新选项新选项新选项新选项3\",\"新选项新选项新选项新选项2\",\"新选项新选项新选项新选项新选项新选项新选项新选项5\"]}]",
+            "layoutLine": 2,
+            "pageFlag": true,
+            "bindKey": false,
+            "tableAttrList": [
+                {
+                    "configJson": {
+                        "layoutLine": 1,
+                        "bindKey": false
+                    },
+                    "attrFormat": "5",
+                    "attrStatus": 1,
+                    "attrTitle": "子表单-文本输入",
+                    "attrComment": "请输入",
+                    "attrNo": "input_924snz3jatw",
+                    "checkJson": {
+                        "require": true
+                    },
+                    "attrType": "input",
+                    "parentId": "subform_wwtm9n0qysg",
+                    "verifyList": [
+                        {
+                            "title": "必填",
+                            "id": "require",
+                            "Checkbox": true,
+                            "value": true
+                        },
+                        {
+                            "title": "最小长度",
+                            "id": "minLength"
+                        },
+                        {
+                            "title": "最大长度",
+                            "id": "maxLength"
+                        }
+                    ]
+                },
+                {
+                    "configJson": {
+                        "filterFlag": true,
+                        "searchFlag": true,
+                        "multipleFlag": false,
+                        "layoutLine": 1,
+                        "bindKey": "ds_lq4pnlq4pn_11565"
+                    },
+                    "attrStatus": 1,
+                    "attrTitle": "子表单-数据对象",
+                    "attrComment": "请选择",
+                    "attrNo": "object_x1o29xz5iu",
+                    "checkJson": {},
+                    "attrType": "object",
+                    "parentId": "subform_wwtm9n0qysg",
+                    "verifyList": [
+                        {
+                            "title": "必填",
+                            "id": "require"
+                        }
+                    ]
+                },
+                {
+                    "configJson": {
+                        "searchFlag": false,
+                        "layoutLine": 1,
+                        "openColor": true,
+                        "selectType": 2,
+                        "selectAllFlag": false,
+                        "bindKey": false
+                    },
+                    "attrStatus": 1,
+                    "attrTitle": "子表单-复选",
+                    "attrComment": "请选择",
+                    "attrNo": "multiple_qdf5qie5r7j",
+                    "checkJson": {},
+                    "attrType": "multiple",
+                    "parentId": "subform_wwtm9n0qysg",
+                    "verifyList": [
+                        {
+                            "title": "必填",
+                            "id": "require"
+                        },
+                        {
+                            "title": "选择选项最大个数",
+                            "id": "maxSelectCount"
+                        }
+                    ]
+                },
+                {
+                    "configJson": {
+                        "layoutLine": 1,
+                        "bindKey": false
+                    },
+                    "attrStatus": 1,
+                    "attrTitle": "子表单-人员",
+                    "attrComment": "请选择",
+                    "attrNo": "personnel_b6p4m2gmhk",
+                    "checkJson": {},
+                    "attrType": "personnel",
+                    "parentId": "subform_wwtm9n0qysg"
+                }
+            ],
+            "defaultType": 0,
+            "maxPageCount": "50",
+            "showSnAddFlag": true,
+            "showOrderFlag": false,
+            "subfromShowType": 1,
+            "showThFlag": true,
+            "showSnAddFlagCache": true,
+            "quotaColumnCount": 1
+        },
+        "attrStatus": 1,
+        "attrTitle": "子表单",
+        "attrSort": 7,
+        "attrNo": "subform_wwtm9n0qysg",
+        "checkJson": {},
+        "attrType": "subform",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            }
+        ]
+    },
+    {
+        "configJson": {
+            "buttonType": "normal",
+            "before": {
+                "beforeModalContent": "确定执行吗？",
+                "isBeforeModal": false,
+                "beforeModalTitle": "提示"
+            },
+            "layoutLine": 1,
+            "fixed": 1,
+            "after": {
+                "toastContent": "操作成功",
+                "isJumpPage": false,
+                "jumpPageMode": "_blank",
+                "isInitPage": false
+            },
+            "align": "start"
+        },
+        "attrStatus": 1,
+        "attrTitle": "按钮1",
+        "attrSort": 8,
+        "attrNo": "button_0b8r5ieirz6k",
+        "checkJson": {},
+        "attrType": "button",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            }
+        ],
+        "execList": []
+    },
+    {
+        "configJson": {
+            "downloadFlag": true,
+            "layoutLine": 1,
+            "maxUploads": 1,
+            "bindKey": false
+        },
+        "attrStatus": 1,
+        "attrTitle": "附件",
+        "attrSort": 9,
+        "attrNo": "upload_whaudrs9srd",
+        "checkJson": {},
+        "attrType": "upload",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            }
+        ]
+    },
+    {
+        "attrFormat": "0",
+        "configJson": {
+            "layoutLine": 1,
+            "bindKey": false
+        },
+        "attrStatus": 1,
+        "attrTitle": "文本输入2",
+        "attrComment": "请输入",
+        "attrSort": 10,
+        "attrNo": "input_a4s1id2c15k",
+        "checkJson": {},
+        "attrType": "input",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            },
+            {
+                "title": "最小长度",
+                "id": "minLength"
+            },
+            {
+                "title": "最大长度",
+                "id": "maxLength"
+            }
+        ]
+    },
+    {
+        "configJson": {
+            "showSnFlag": true,
+            "quotaColumnFlag": true,
+            "confirmCheckFlag": false,
+            "showOptionFlag": true,
+            "pageCount": "10",
+            "layoutLine": 2,
+            "pageFlag": true,
+            "bindKey": false,
+            "tableAttrList": [
+                {
+                    "configJson": {
+                        "layoutLine": 1,
+                        "bindKey": false
+                    },
+                    "attrFormat": "0",
+                    "attrStatus": 1,
+                    "attrTitle": "文本输入1",
+                    "attrComment": "请输入",
+                    "attrNo": "input_ctuhj13dl8",
+                    "checkJson": {},
+                    "attrType": "input",
+                    "parentId": "subform_hc4zxy4km8m",
+                    "verifyList": [
+                        {
+                            "title": "必填",
+                            "id": "require"
+                        },
+                        {
+                            "title": "最小长度",
+                            "id": "minLength"
+                        },
+                        {
+                            "title": "最大长度",
+                            "id": "maxLength"
+                        }
+                    ]
+                },
+                {
+                    "configJson": {
+                        "layoutLine": 1,
+                        "bindKey": false
+                    },
+                    "attrFormat": "0",
+                    "attrStatus": 1,
+                    "attrTitle": "文本输入2",
+                    "attrComment": "请输入",
+                    "attrNo": "input_v63j20dlk4",
+                    "checkJson": {},
+                    "attrType": "input",
+                    "parentId": "subform_hc4zxy4km8m",
+                    "verifyList": [
+                        {
+                            "title": "必填",
+                            "id": "require"
+                        },
+                        {
+                            "title": "最小长度",
+                            "id": "minLength"
+                        },
+                        {
+                            "title": "最大长度",
+                            "id": "maxLength"
+                        }
+                    ]
+                }
+            ],
+            "maxPageCount": "50",
+            "showSnAddFlag": true,
+            "showOrderFlag": false,
+            "subfromShowType": 2,
+            "showThFlag": true,
+            "showSnAddFlagCache": true,
+            "quotaColumnCount": 1
+        },
+        "attrStatus": 1,
+        "attrTitle": "子表单2",
+        "attrSort": 11,
+        "attrNo": "subform_hc4zxy4km8m",
+        "checkJson": {},
+        "attrType": "subform",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            }
+        ]
+    },
+    {
+        "configJson": {
+            "buttonType": "ghost",
+            "before": {
+                "beforeModalContent": "确定执行吗？",
+                "isBeforeModal": true,
+                "beforeModalTitle": "提示"
+            },
+            "layoutLine": 1,
+            "fixed": 1,
+            "after": {
+                "toastContent": "操作成功",
+                "pageAddr": "",
+                "isJumpPage": false,
+                "jumpPageMode": "_blank",
+                "isInitPage": false
+            },
+            "align": "center"
+        },
+        "attrStatus": 1,
+        "attrTitle": "按钮3",
+        "attrSort": 12,
+        "attrNo": "button_l83axaq8sah",
+        "checkJson": {},
+        "attrType": "button",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            }
+        ],
+        "execList": [
+            {
+                "handleType": 1,
+                "isStart": true,
+                "bodyJson": {
+                    "paramList": [
+                        {
+                            "attrKey": "_name",
+                            "attrValue": "input_jclv1ajqyf",
+                            "isColumn": true
+                        }
+                    ],
+                    "bindKey": "ds_cf9opcf9op_115"
+                },
+                "buttonKey": "button_l83axaq8sah",
+                "execName": "添加数据-员工基本信息"
+            }
+        ]
+    },
+    {
+        "configJson": {
+            "buttonType": "normal",
+            "before": {
+                "beforeModalContent": "确定执行吗？",
+                "isBeforeModal": false,
+                "beforeModalTitle": "提示"
+            },
+            "layoutLine": 1,
+            "fixed": 0,
+            "after": {
+                "toastContent": "操作成功",
+                "isJumpPage": false,
+                "jumpPageMode": "_blank",
+                "isInitPage": false
+            },
+            "align": "end"
+        },
+        "attrStatus": 1,
+        "attrTitle": "按钮",
+        "attrSort": 13,
+        "attrNo": "button_t0mek0oqe",
+        "checkJson": {},
+        "attrType": "button",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            }
+        ],
+        "execList": []
+    },
+    {
+        "configJson": {
+            "buttonType": "normal",
+            "before": {
+                "beforeModalContent": "确定执行吗？",
+                "isBeforeModal": false,
+                "beforeModalTitle": "提示"
+            },
+            "layoutLine": 1,
+            "fixed": 0,
+            "after": {
+                "toastContent": "操作成功",
+                "isJumpPage": false,
+                "jumpPageMode": "_blank",
+                "isInitPage": false
+            }
+        },
+        "attrStatus": 1,
+        "attrTitle": "按钮2",
+        "attrSort": 14,
+        "attrNo": "button_spkzi1b6k6",
+        "checkJson": {},
+        "attrType": "button",
+        "verifyList": [
+            {
+                "title": "必填",
+                "id": "require"
+            }
+        ],
+        "execList": []
+    }
+]
