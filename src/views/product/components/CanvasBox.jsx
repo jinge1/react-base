@@ -78,20 +78,21 @@ const Card = ({ id, children, index, parentId, targetInfo, setTargetInfo }) => {
       })
     }
   })
-  const [{ isDragging }, drag] = useDrag({
+  const [{ isDragging }, drag, dragPreview] = useDrag({
     type: 'CARD',
     item: () => {
       return { id, index }
     },
     collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    //   previewOptions: (args)=> {
-    //     console.log(args, 'aaa---')
-    //     return <div>1</div>
-    //   }
+      isDragging: monitor.isDragging()
+      //   dragPreview: (...args)=> console.log(args, 'aaa---')
+      //   previewOptions: (args)=> {
+      //     console.log(args, 'aaa---')
+      //     return <div>1</div>
+      //   }
     })
   })
-  const opacity = isDragging ? 0 : 1
+  const opacity = isDragging ? 1 : 1
   drag(drop(ref))
   let activeStyle =
     targetInfo.x === 'up'
@@ -104,14 +105,21 @@ const Card = ({ id, children, index, parentId, targetInfo, setTargetInfo }) => {
         : { right: 0, top: 0, width: '2px', height: '100%' }
   }
   return (
-    <CardBox
-      ref={ref}
-      style={{ ...cardStyle, opacity }}
-      data-handler-id={handlerId}
-    >
-      {children}
-      {targetInfo.id === id && <Direction style={activeStyle}></Direction>}
-    </CardBox>
+    <>
+      {/* {isDragging && (
+        <div ref={dragPreview} style={{ background: '##990000' }}>
+          view
+        </div>
+      )} */}
+      <CardBox
+        ref={ref}
+        style={{ ...cardStyle, opacity }}
+        data-handler-id={handlerId}
+      >
+        {children}
+        {targetInfo.id === id && <Direction style={activeStyle}></Direction>}
+      </CardBox>
+    </>
   )
 }
 

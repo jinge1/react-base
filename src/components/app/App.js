@@ -31,6 +31,10 @@ function App() {
       text: "product",
       path: "/product",
     },
+    {
+      text: "test",
+      path: "/Test",
+    },
   ];
 
   return (
@@ -65,7 +69,10 @@ function App() {
                 path="/product"
                 component={lazy(() => import("../../views/product/Product"))}
               />
-
+              <Route
+                path="/test"
+                component={lazy(() => import("../../views/test/Test"))}
+              />
               <Route path="/">
                 <Redirect to="/about" />
               </Route>
