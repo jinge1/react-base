@@ -133,7 +133,7 @@ const SubForm = ({ arr = [], parentId, targetInfo, setTargetInfo }) => {
       >
         <TableCol style={{ width: 80 }}>
           <div>序号</div>
-          <div>序号</div>
+          <div></div>
         </TableCol>
         {arr.map((item) => (
           <TableCol style={{ width: itemWidth }} key={item.attrNo}>

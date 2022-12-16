@@ -26,17 +26,17 @@ const coms = [
   { text: '日期选择5' },
   { text: '子表单6' },
   { text: '文本框7' },
-  { text: '日期选择8' },
-  { text: '子表单9' },
-  { text: '文本框10' },
-  { text: '日期选择11' },
-  { text: '子表单12' },
-  { text: '文本框13' },
-  { text: '日期选择14' },
-  { text: '子表单15' },
-  { text: '文本框16' },
-  { text: '日期选择17' },
-  { text: '子表单18' }
+  // { text: '日期选择8' },
+  // { text: '子表单9' },
+  // { text: '文本框10' },
+  // { text: '日期选择11' },
+  // { text: '子表单12' },
+  // { text: '文本框13' },
+  // { text: '日期选择14' },
+  // { text: '子表单15' },
+  // { text: '文本框16' },
+  // { text: '日期选择17' },
+  // { text: '子表单18' }
 ]
 
 const Card = ({ id, name, index, active, setActive }) => {
@@ -89,12 +89,12 @@ const Card = ({ id, name, index, active, setActive }) => {
       isDragging: monitor.isDragging()
     })
   })
-  const opacity = isDragging ? 0 : 1
+  // const opacity = isDragging ? 0 : 1
   drag(drop(ref))
   return (
     <div
       ref={ref}
-      style={{ ...cardStyle, opacity }}
+      // style={{ ...cardStyle, opacity }}
       data-handler-id={handlerId}
     >
       <div>{name}</div>
