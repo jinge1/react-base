@@ -2,8 +2,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from '@emotion/styled'
 import { Input, Avatar, Button, List, message } from 'antd'
 const { Configuration, OpenAIApi } = require('openai')
+
+const apiKey = ''
+
 const configuration = new Configuration({
-  apiKey: ''
+  apiKey
 })
 const openai = new OpenAIApi(configuration)
 
@@ -42,6 +45,9 @@ function Product() {
   const [result, setResult] = useState([])
   const [disabled, setDisabled] = useState(false)
   const send = useCallback(async () => {
+    if(!apiKey){
+      return message.error('apiKey不存在')
+    }
     if (value.trim() === '') {
       return message.error('请输入内容')
     }
