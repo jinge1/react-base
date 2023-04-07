@@ -1,130 +1,46 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import styled from '@emotion/styled'
-import { Input, Avatar, Button, List, message } from 'antd'
-const { Configuration, OpenAIApi } = require('openai')
-
-const apiKey = ''
-
-const configuration = new Configuration({
-  apiKey
-})
-const openai = new OpenAIApi(configuration)
-
-const { TextArea } = Input
+import GptChat from '@/components/gptChat/index'
 
 const Box = styled.div`
   display: flex;
   flex-direction: column;
 `
-const ChatBox = styled.div`
-  height: 450px;
-  overflow: auto;
-  margin-bottom: 20px;
-`
-const InputBox = styled.div`
-  display: flex;
-`
 
-const LeftBox = styled.div`
-  flex: 1;
-`
-
-const RightBox = styled.div``
-
-const sendGpt = async (messages) => {
-  const { data } = await openai.createChatCompletion({
-    model: 'gpt-3.5-turbo',
-    messages
-  })
-  return data
-}
+const defaultMessage = [
+  `现在假设你是一名专业的信息录入员，需要将用户的语言转换为json数据。
+  转换例子如下：生成一个表单，包含用户姓名，性别，出生日期。则转换json为：
+  [
+    {
+      "attrTitle": "用户姓名",
+      "attrComment": "请输入",
+      "attrNo": "input_di7px5vaqyt",
+      "attrType": "Input"
+    },
+    {
+      "attrTitle": "性别",
+      "attrComment": "请选择",
+      "attrNo": "Select_di7px5vaqyt",
+      "attrType": "select"
+    },
+    {
+      "attrTitle": "出生日期",
+      "attrComment": "请输入",
+      "attrNo": "date_di7px5vaqyt",
+      "attrType": "Date"
+    }
+  ]
+  其中attrTitle字段为字段描述，attrComment为控件默认提示语，attrNo为attrType字段只与11位随机数组合，
+  attrType为组件类型，目前包括文本类型（Input），数字类型（InputNumber），单选类型（Select），日期类型（DatePicker），复选类型（MultipleSelect），附件类型（Upload），
+  级联类型（Cascader），地址类型（Address），按钮类型（Button）`
+]
 
 function Product() {
-  const [value, setValue] = useState('')
-  const [questions, setQuestions] = useState([])
-  const [result, setResult] = useState([])
-  const [disabled, setDisabled] = useState(false)
-  const send = useCallback(async () => {
-    if(!apiKey){
-      return message.error('apiKey不存在')
-    }
-    if (value.trim() === '') {
-      return message.error('请输入内容')
-    }
-    setDisabled(true)
-    const nextQuestions = [
-      ...questions,
-      {
-        role: 'user',
-        content: value
-      }
-    ]
-    const data = await sendGpt(nextQuestions)
-    const { id, choices } = data
-    const { message: msg } =
-      Array.isArray(choices) && choices.length > 0 ? choices[0] : {}
-    setQuestions(nextQuestions)
-    setResult((pre) => [...pre, { ...msg, id }])
-    setDisabled(false)
-    setValue('')
-  }, [value, questions])
-
-  const showContent = useMemo(
-    () =>
-      questions
-        .map(({ role, content }, index) => {
-          const { id, ...other } = result[index] || {}
-          return id
-            ? [
-                {
-                  role,
-                  content,
-                  id,
-                  photo: 'https://randomuser.me/api/portraits/men/46.jpg'
-                },
-                {
-                  id,
-                  ...other,
-                  photo: 'https://randomuser.me/api/portraits/women/71.jpg'
-                }
-              ]
-            : [{ role, content, id: Date.now() }]
-        })
-        .reduce((pre, [q, a]) => (a ? [...pre, q, a] : [...pre, q]), []),
-    [questions, result]
-  )
   return (
     <Box>
-      <ChatBox>
-        <List
-          itemLayout="horizontal"
-          dataSource={showContent}
-          renderItem={({ photo, role, content, id }, index) => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={<Avatar src={photo} />}
-                title={role}
-                description={content}
-              />
-            </List.Item>
-          )}
-        />
-      </ChatBox>
-      <InputBox>
-        <LeftBox style={{ marginRight: 20 }}>
-          <TextArea
-            rows={5}
-            value={value}
-            onChange={({ target }) => setValue(target.value)}
-            placeholder="说出你心中的困惑，我将为你解答"
-          ></TextArea>
-        </LeftBox>
-        <RightBox>
-          <Button disabled={disabled} type="primary" onClick={send}>
-            send
-          </Button>
-        </RightBox>
-      </InputBox>
+      <GptChat
+        // apiKey=""
+        defaultMessage={defaultMessage}
+      ></GptChat>
     </Box>
   )
 }
